@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.utils &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+ 
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.utils
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/lib/utils.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p>Chaplin’s utils provide common functions for use throughout the project.</p>
+
+<p>These functions are generic and not related to any specific Chaplin components. Useful functions for messing with Chaplin are available in <a href="chaplin.helpers.html">Chaplin.helpers</a>.</p>
+
+<h3 class="module-member" id="beget">beget(parent)</h3>
+
+<ul>
+<li><strong>returns a new object with <code>parent</code> as its prototype</strong></li>
+</ul>
+
+<p>A standard Javascript helper function that creates an object which delegates to another object. (see Douglas Crockford&#39;s <em>Javascript: The Good Parts</em> for more details). Uses <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/create">Object.create</a> when available, and falls back to a polyfill if not present.</p>
+
+<h3 class="module-member" id="readonly">readonly(object, [*properties])</h3>
+
+<ul>
+<li><strong>returns true if successful, false if unsupported by the browser’s runtime</strong></li>
+</ul>
+
+<p>Makes properties of <strong>object</strong> read-only so they cannot be overwritten. The success of this operation depends on the current environment’s support.</p>
+
+<h3 class="module-member" id="getPrototypeChain">getPrototypeChain(object)</h3>
+
+<ul>
+<li><strong>Object object</strong></li>
+</ul>
+
+<p>Gets the whole chain of prototypes for <code>object</code>.</p>
+
+<h3 class="module-member" id="getAllPropertyVersions">getAllPropertyVersions(object, property)</h3>
+
+<ul>
+<li><strong>Object object</strong></li>
+<li><strong>String property</strong></li>
+</ul>
+
+<p>Get all different value versions for <code>property</code> from <code>object</code>’s prototype chain. Usage:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="k">class</span> <span class="nx">A</span>
+  <span class="nv">prop: </span><span class="mi">1</span>
+<span class="k">class</span> <span class="nx">B</span> <span class="k">extends</span> <span class="nx">A</span>
+  <span class="nv">prop: </span><span class="mi">2</span>
+
+<span class="nv">b = </span><span class="k">new</span> <span class="nx">B</span>
+<span class="nx">getAllPropertyVersions</span> <span class="nx">b</span><span class="p">,</span> <span class="s">&#39;prop&#39;</span>  <span class="c1"># =&gt; [1, 2]</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">A</span><span class="p">()</span> <span class="p">{}</span>
+<span class="nx">A</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">prop</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">B</span><span class="p">()</span> <span class="p">{}</span>
+<span class="nx">B</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">A</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">B</span><span class="p">;</span>
+<span class="nx">getAllPropertyVersions</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="s1">&#39;prop&#39;</span><span class="p">);</span> <span class="c1">// =&gt; [1, 2]</span>
+</code></pre></div>
+<h3 class="module-member" id="upcase">upcase(str)</h3>
+
+<ul>
+<li><strong>String <code>str</code></strong></li>
+<li><strong>returns upcased version of <code>str</code></strong></li>
+</ul>
+
+<p>Ensure the first character of <code>str</code> is capitalized</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">utils</span><span class="p">.</span><span class="nx">upcase</span> <span class="s">&#39;larry bird&#39;</span> <span class="c1"># &#39;Larry bird&#39;</span>
+<span class="nx">utils</span><span class="p">.</span><span class="nx">upcase</span> <span class="s">&#39;AIR&#39;</span>        <span class="c1"># &#39;AIR&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">utils</span><span class="p">.</span><span class="nx">upcase</span><span class="p">(</span><span class="s1">&#39;larry bird&#39;</span><span class="p">);</span> <span class="c1">// &#39;Larry bird&#39;</span>
+<span class="nx">utils</span><span class="p">.</span><span class="nx">upcase</span><span class="p">(</span><span class="s1">&#39;AIR&#39;</span><span class="p">);</span>        <span class="c1">// &#39;AIR&#39;</span>
+</code></pre></div>
+<h3 class="module-member" id="modifierKeyPressed">modifierKeyPressed(event)</h3>
+
+<ul>
+<li><strong>jQuery normalized event object <code>event</code></strong></li>
+<li><strong>returns boolean</strong></li>
+</ul>
+
+<p>Looks at an event object <code>event</code> to determine if the <strong>shift</strong>, <strong>alt</strong>, <strong>ctrl</strong>, or <strong>meta</strong> keys were pressed. Useful in link click handling (i.e. if you need ctrl-click or shift-click to open the link in a new window).</p>
+
+  </div>
+  </div>
+</body>
+</html>

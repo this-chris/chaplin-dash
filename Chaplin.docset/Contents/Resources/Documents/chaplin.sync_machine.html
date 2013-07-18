@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.SyncMachine &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+ 
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.SyncMachine
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/lib/sync_machine.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p>The  <code>Chaplin.SyncMachine</code> is a <a href="http://en.wikipedia.org/wiki/Finite-state_machine">finite-state machine</a> for synchronization of models/collections. There are three states in which a model or collection can be in; unsynced, syncing, and synced. When a state transition (unsynced, syncing, synced, and syncStateChange) occurs, Backbone events are called on the model or collection.</p>
+
+<h2 id="methods">Methods</h2>
+
+<h3 class="module-member" id="syncState">syncState</h3>
+
+<p>Returns the current synchronization state of the machine.</p>
+
+<h3 class="module-member" id="isUnsynced">isUnsynced</h3>
+
+<p>Returns a boolean to help determine if the model or collection is unsynced.</p>
+
+<h3 class="module-member" id="isSynced">isSynced</h3>
+
+<p>Returns a boolean to help determine if the model or collection is synced.</p>
+
+<h3 class="module-member" id="isSyncing">isSyncing</h3>
+
+<p>Returns a boolean to help determine if the model or collection is currently syncing.</p>
+
+<h3 class="module-member" id="unsync">unsync</h3>
+
+<p>Sets the state machine’s state to <code>unsynced</code>, then triggers any events listening for the <code>unsynced</code> and <code>syncStateChange</code> events.</p>
+
+<h3 class="module-member" id="beginSync">beginSync</h3>
+
+<p>Sets the state machine’s state to <code>syncing</code>, then triggers any events listening for the <code>syncing</code> and <code>syncStateChange</code> events.</p>
+
+<h3 class="module-member" id="finishSync">finishSync</h3>
+
+<p>Sets the state machine’s state to <code>synced</code>, then triggers any events listening for the <code>synced</code> and <code>syncStateChange</code> events.</p>
+
+<h3 class="module-member" id="abortSync">abortSync</h3>
+
+<p>Sets the state machine’s state back to the previous state if the state machine is in the <code>syncing</code> state. Then triggers any events listening for the previous state and <code>syncStateChange</code> events.</p>
+
+<h3 class="module-member" id="unsynced">unsynced([callback], [context=this])</h3>
+
+<p><code>unsynced</code> is a convenience method which will execute a callback in a specified context whenever the state machine enters into the <code>unsynced</code> state.</p>
+
+<ul>
+<li><strong>callback</strong>: a function to be called when the <code>unsynced</code> event occurs</li>
+<li><strong>context</strong>: the context in which the callback should execute in. Defaults to <code>this</code>.</li>
+</ul>
+
+<h3 class="module-member" id="syncing">syncing([callback], [context=this])</h3>
+
+<p><code>syncing</code> is a convenience method which will execute a callback in a specified context whenever the state machine enters into the <code>syncing</code> state.</p>
+
+<ul>
+<li><strong>callback</strong>: a function to be called when the <code>syncing</code> event occurs</li>
+<li><strong>context</strong>: the context in which the callback should execute in. Defaults to <code>this</code>.</li>
+</ul>
+
+<h3 class="module-member" id="synced">synced([callback], [context=this])</h3>
+
+<p><code>synced</code> is a convenience method which will execute a callback in a specified context whenever the state machine enters into the <code>synced</code> state.</p>
+
+<ul>
+<li><strong>callback</strong>: a function to be called when the <code>synced</code> event occurs</li>
+<li><strong>context</strong>: the context in which the callback should execute in. Defaults to <code>this</code>.</li>
+</ul>
+
+<h3 class="module-member" id="syncStateChange">syncStateChange([callback], [context=this])</h3>
+
+<p><code>syncStateChange</code> is a convenience method which will execute a callback in a specified context whenever the state machine changes state.</p>
+
+<ul>
+<li><strong>callback</strong>: a function to be called when a state change occurs.</li>
+<li><strong>context</strong>: the context in which the callback should execute in. Defaults to <code>this</code>.</li>
+</ul>
+
+<h2 id="toc_0">Usage</h2>
+
+<p>The <code>Chaplin.SyncMachine</code> is a dependency of <code>Chaplin.Model</code> and <code>Chaplin.Collection</code> and should be used for complex synchronization of models and collections. As an example, think of making requests to you own REST API or some third party web service.</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;chaplin&#39;</span>
+  <span class="s">&#39;models/post&#39;</span> <span class="c1"># Post model</span>
+<span class="p">],</span> <span class="nf">(Chaplin.Collection, Post) -&gt;</span>
+
+  <span class="k">class</span> <span class="nx">Posts</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Collection</span>
+    <span class="c1"># Initialize the SyncMachine</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">@prototype</span><span class="p">,</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">SyncMachine</span>
+
+    <span class="nv">model: </span><span class="nx">Post</span>
+
+    <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+      <span class="k">super</span>
+
+      <span class="c1"># Will be called on every state change</span>
+      <span class="nx">@syncStateChange</span> <span class="nx">announce</span>
+
+      <span class="nx">@fetch</span><span class="p">()</span>
+
+    <span class="c1"># Custom fetch method which warrents</span>
+    <span class="c1"># the sync machine</span>
+    <span class="nv">fetch: </span><span class="o">=&gt;</span>
+
+      <span class="c1">#Set the machine into `syncing` state</span>
+      <span class="nx">@beginSync</span><span class="p">()</span>
+
+      <span class="c1"># Do something interesting like calling</span>
+      <span class="c1"># a 3rd party service</span>
+      <span class="nx">$</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;http://some-service.com/posts&#39;</span><span class="p">,</span> <span class="nx">@processPosts</span>
+
+    <span class="nv">processPosts: </span><span class="nf">(response) =&gt;</span>
+      <span class="c1"># Exit if for some reason this collection was</span>
+      <span class="c1"># disposed prior to the response</span>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">@disposed</span>
+
+      <span class="c1"># Update the collection</span>
+      <span class="nx">@reset</span><span class="p">(</span><span class="k">if</span> <span class="nx">response</span> <span class="o">and</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span> <span class="k">then</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span> <span class="k">else</span> <span class="p">[])</span>
+
+      <span class="c1"># Set the machine into `synced` state</span>
+      <span class="nx">@finishSync</span><span class="p">()</span>
+
+    <span class="nv">announce: </span><span class="o">=&gt;</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">debug</span> <span class="s">&#39;state changed&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">define</span><span class="p">([</span>
+  <span class="s1">&#39;chaplin&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;models/post&#39;</span> <span class="c1">// Post model</span>
+<span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Collection</span><span class="p">,</span> <span class="nx">Post</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="kd">var</span> <span class="nx">Posts</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+    <span class="nx">model</span><span class="o">:</span> <span class="nx">Post</span><span class="p">,</span>
+
+    <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">initialize</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+
+      <span class="c1">// Initialize the SyncMachine</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">SyncMachine</span><span class="p">);</span>
+
+      <span class="c1">// Will be called on every state change</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">syncStateChange</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">announce</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+
+      <span class="k">this</span><span class="p">.</span><span class="nx">fetch</span><span class="p">();</span>
+    <span class="p">},</span>
+
+    <span class="c1">// Custom fetch method which warrents</span>
+    <span class="c1">// the sync machine</span>
+    <span class="nx">fetch</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="c1">// Set the machine into `syncing` state</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">beginSync</span><span class="p">()</span>
+
+      <span class="c1">// Do something interesting like calling</span>
+      <span class="c1">// a 3rd party service</span>
+      <span class="nx">$</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;http://some-service.com/posts&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">processPosts</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">))</span>
+    <span class="p">},</span>
+
+    <span class="nx">processPosts</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Exit if for some reason this collection was</span>
+      <span class="c1">// disposed prior to the response</span>
+      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">disposed</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+
+      <span class="c1">// Update the collection</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">((</span><span class="nx">response</span> <span class="o">&amp;&amp;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span> <span class="o">?</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span> <span class="o">:</span> <span class="p">[]);</span>
+
+      <span class="c1">// Set the machine into `synced` state</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">finishSync</span><span class="p">();</span>
+    <span class="p">},</span>
+
+    <span class="nx">announce</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="s1">&#39;state changed&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+
+  <span class="k">return</span> <span class="nx">Posts</span><span class="p">;</span>
+</code></pre></div>
+<p>Another example of using <code>SyncMachine</code> with <code>Model</code>:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="k">class</span> <span class="nx">Model</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Model</span>
+  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">@prototype</span><span class="p">,</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">SyncMachine</span>
+
+  <span class="nv">fetch: </span><span class="nf">(options = {}) -&gt;</span>
+    <span class="nx">@beginSync</span><span class="p">()</span>
+    <span class="nv">success = </span><span class="nx">options</span><span class="p">.</span><span class="nx">success</span>
+    <span class="nv">options.success = </span><span class="nf">(model, response) =&gt;</span>
+      <span class="nx">success</span><span class="o">?</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">response</span>
+      <span class="nx">@finishSync</span><span class="p">()</span>
+    <span class="k">super</span> <span class="nx">options</span>
+
+<span class="c1"># Will render view when model data will arrive from server.</span>
+<span class="k">class</span> <span class="nx">View</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">rendered: </span><span class="kc">no</span>
+  <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+    <span class="k">super</span>
+    <span class="c1"># Render.</span>
+    <span class="nx">@model</span><span class="p">.</span><span class="nx">synced</span> <span class="o">=&gt;</span>
+      <span class="k">unless</span> <span class="nx">@rendered</span>
+        <span class="nx">@render</span><span class="p">()</span>
+        <span class="vi">@rendered = </span><span class="kc">yes</span>
+
+<span class="p">...</span>
+
+<span class="nv">model = </span><span class="k">new</span> <span class="nx">Model</span>
+<span class="nv">view = </span><span class="k">new</span> <span class="nx">View</span> <span class="p">{</span><span class="nx">model</span><span class="p">}</span>
+<span class="nx">model</span><span class="p">.</span><span class="nx">fetch</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">Model</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">initialize</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">SyncMachine</span><span class="p">);</span>
+  <span class="p">},</span>
+
+  <span class="nx">fetch</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">options</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">beginSync</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">success</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">success</span><span class="p">;</span>
+
+    <span class="nx">options</span><span class="p">.</span><span class="nx">success</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">success</span><span class="o">?</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">response</span>
+      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">success</span> <span class="o">===</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span> <span class="nx">success</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">finishSync</span><span class="p">();</span>
+    <span class="p">}).</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+
+    <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">fetch</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// Will render view when model data will arrive from server.</span>
+<span class="kd">var</span> <span class="nx">View</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">rendered</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">initialize</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+    <span class="c1">// Render.</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">synced</span><span class="p">((</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">rendered</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">rendered</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}).</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+<span class="p">...</span>
+
+<span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">View</span><span class="p">({</span><span class="nx">model</span><span class="o">:</span> <span class="nx">model</span><span class="p">});</span>
+<span class="nx">model</span><span class="p">.</span><span class="nx">fetch</span><span class="p">();</span>
+</code></pre></div>
+  </div>
+  </div>
+</body>
+</html>

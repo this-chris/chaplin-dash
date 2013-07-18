@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.Composer &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.Composer
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/composer.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <h2 id="toc_0">Overview</h2>
+
+<p>Grants the ability for views (and related data) to be persisted beyond one controller action.</p>
+
+<p>If a view is composed in a controller action method it will be instantiated and rendered if the view has not been composed in the current or previous action methods.</p>
+
+<p>If a view was composed in the previous action method and is not composed in the current action method, it will be disposed and removed from the DOM.</p>
+
+<h2 id="toc_1">Example</h2>
+
+<p>A common use case is a login page. This login page is a simple centered form.  However, the main application needs both header and footer controllers.</p>
+
+<p>The following is a sketch of this use case put into code:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="c1"># routes.coffee</span>
+<span class="nf">(match) -&gt;</span>
+  <span class="nx">match</span> <span class="s">&#39;login&#39;</span><span class="p">,</span> <span class="s">&#39;login#show&#39;</span>
+  <span class="nx">match</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;index#show&#39;</span>
+  <span class="nx">match</span> <span class="s">&#39;about&#39;</span><span class="p">,</span> <span class="s">&#39;about#show&#39;</span>
+
+
+<span class="c1"># controllers/login_controller.coffee</span>
+<span class="nv">Login = </span><span class="nx">require</span> <span class="s">&#39;views/login&#39;</span>
+<span class="k">class</span> <span class="nx">LoginController</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Controller</span>
+  <span class="nv">show: </span><span class="nf">-&gt;</span>
+    <span class="c1"># Simple view, just want to show the login screen</span>
+    <span class="vi">@view = </span><span class="k">new</span> <span class="nx">Login</span><span class="p">()</span>
+
+
+<span class="c1"># controllers/site_controller.coffee</span>
+<span class="nv">Site = </span><span class="nx">require</span> <span class="s">&#39;views/site&#39;</span>
+<span class="nv">Header = </span><span class="nx">require</span> <span class="s">&#39;views/header&#39;</span>
+<span class="nv">Footer = </span><span class="nx">require</span> <span class="s">&#39;views/footer&#39;</span>
+<span class="k">class</span> <span class="nx">SiteController</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Controller</span>
+  <span class="nv">beforeAction: </span><span class="nf">-&gt;</span>
+    <span class="c1"># Compose the Site view, which is a simple 3-row stacked layout that</span>
+    <span class="c1"># provides the header, footer, and body regions</span>
+    <span class="nx">@compose</span> <span class="s">&#39;site&#39;</span><span class="p">,</span> <span class="nx">Site</span>
+
+    <span class="c1"># Compose the Header view, which binds itself to whatever container</span>
+    <span class="c1"># is exposed in Site under the header region</span>
+    <span class="nx">@compose</span> <span class="s">&#39;header&#39;</span><span class="p">,</span> <span class="nx">Header</span><span class="p">,</span> <span class="nv">region: </span><span class="s">&#39;header&#39;</span>
+
+    <span class="c1"># Likewise for the footer region</span>
+    <span class="nx">@compose</span> <span class="s">&#39;footer&#39;</span><span class="p">,</span> <span class="nx">Footer</span><span class="p">,</span> <span class="nv">region: </span><span class="s">&#39;footer&#39;</span>
+
+
+<span class="c1"># controllers/index_controller.coffee</span>
+<span class="nv">Index = </span><span class="nx">require</span> <span class="s">&#39;views/index&#39;</span>
+<span class="nv">SiteController = </span><span class="nx">require</span> <span class="s">&#39;controllers/site_controller&#39;</span>
+<span class="k">class</span> <span class="nx">IndexController</span> <span class="k">extends</span> <span class="nx">SiteController</span>
+  <span class="nv">show: </span><span class="nf">-&gt;</span>
+    <span class="c1"># Instantiate this simple index view at the body region</span>
+    <span class="vi">@view = </span><span class="k">new</span> <span class="nx">Index</span> <span class="nv">region: </span><span class="s">&#39;body&#39;</span>
+
+
+<span class="c1"># controllers/about_me_controller.coffee</span>
+<span class="nv">AboutMe = </span><span class="nx">require</span> <span class="s">&#39;views/aboutme&#39;</span>
+<span class="nv">SiteController = </span><span class="nx">require</span> <span class="s">&#39;controllers/site_controller&#39;</span>
+<span class="k">class</span> <span class="nx">AboutMeController</span> <span class="k">extends</span> <span class="nx">SiteController</span>
+  <span class="nv">show: </span><span class="nf">-&gt;</span>
+    <span class="c1"># Instantiate this simple about me view at the body region</span>
+    <span class="vi">@view = </span><span class="k">new</span> <span class="nx">AboutMe</span> <span class="nv">region: </span><span class="s">&#39;body&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="c1">// routes.js</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">match</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="s1">&#39;login#show&#39;</span><span class="p">);</span>
+  <span class="nx">match</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;index#show&#39;</span><span class="p">);</span>
+  <span class="nx">match</span><span class="p">(</span><span class="s1">&#39;about&#39;</span><span class="p">,</span> <span class="s1">&#39;about#show&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// controllers/login_controller.js</span>
+<span class="kd">var</span> <span class="nx">Login</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;views/login&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">LoginController</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Controller</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">show</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Simple view, just want to show the login screen.</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Login</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// controllers/site_controller.js</span>
+<span class="kd">var</span> <span class="nx">Site</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;views/site&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">Header</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;views/header&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">Footer</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;views/footer&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">SiteController</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Controller</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">beforeAction</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Compose the Site view, which is a simple 3-row stacked layout that</span>
+    <span class="c1">// provides the header, footer, and body regions</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="s1">&#39;site&#39;</span><span class="p">,</span> <span class="nx">Site</span><span class="p">);</span>
+
+    <span class="c1">// Compose the Header view, which binds itself to whatever container</span>
+    <span class="c1">// is exposed in Site under the header region</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="s1">&#39;header&#39;</span><span class="p">,</span> <span class="nx">Header</span><span class="p">,</span> <span class="p">{</span><span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;header&#39;</span><span class="p">});</span>
+
+    <span class="c1">// Likewise for the footer region</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="s1">&#39;footer&#39;</span><span class="p">,</span> <span class="nx">Footer</span><span class="p">,</span> <span class="p">{</span><span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;footer&#39;</span><span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// controllers/index_controller.js</span>
+<span class="kd">var</span> <span class="nx">Index</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;views/index&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">SiteController</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;controllers/site_controller&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">IndexController</span> <span class="o">=</span> <span class="nx">SiteController</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">show</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Instantiate this simple index view at the body region.</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Index</span><span class="p">({</span><span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;body&#39;</span><span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// controllers/about_me_controller.js</span>
+<span class="kd">var</span> <span class="nx">AboutMe</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;views/aboutme&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">SiteController</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;controllers/site_controller&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">AboutMeController</span> <span class="o">=</span> <span class="nx">SiteController</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">show</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Instantiate this simple about me view at the body region.</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AboutMe</span><span class="p">({</span><span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;body&#39;</span><span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>Given the controllers above here is what would happen each time the URL is routed:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">route</span><span class="p">(</span><span class="s">&#39;login&#39;</span><span class="p">)</span>
+<span class="c1"># &#39;views/login&#39; is initialized and rendered</span>
+
+<span class="nx">route</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="c1"># &#39;views/site&#39; is initialized and rendered</span>
+<span class="c1"># &#39;views/header&#39; is initialized and rendered</span>
+<span class="c1"># &#39;views/footer&#39; is initialized and rendered</span>
+<span class="c1"># &#39;views/index&#39; is initialized and rendered</span>
+<span class="c1"># &#39;views/login&#39; is disposed</span>
+
+<span class="nx">route</span><span class="p">(</span><span class="s">&#39;about&#39;</span><span class="p">)</span>
+<span class="c1"># &#39;views/aboutme&#39; is initialized and rendered</span>
+<span class="c1"># &#39;views/index&#39; is disposed</span>
+
+<span class="nx">route</span><span class="p">(</span><span class="s">&#39;login&#39;</span><span class="p">)</span>
+<span class="c1"># &#39;views/login&#39; is initialized and rendered</span>
+<span class="c1"># &#39;views/index&#39; is disposed</span>
+<span class="c1"># &#39;views/footer&#39; is disposed</span>
+<span class="c1"># &#39;views/header&#39; is disposed</span>
+<span class="c1"># &#39;views/site&#39; is disposed</span>
+</code></pre></div>
+<h2 id="toc_2">Long form</h2>
+
+<p>By default, when a controller requests a view to be composed, the composer checks if the view instance exists and the new options are the same as before. If that is true the view is destroyed and composed.</p>
+
+<p>By default, the compose method only allows for composing views.</p>
+
+<p>The following example shows another way to use the compose method to allow for just about anything. The check method should return true when it wishes the composition to be disposed and the compose method to be called. The composer will track and ensure proper disposal of whatever is returned from the compose method (be it a view or an object with properties that have dispose methods).</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript">  <span class="nx">@compose</span> <span class="s">&#39;something-strange&#39;</span><span class="p">,</span>
+    <span class="nv">compose: </span><span class="nf">-&gt;</span>
+      <span class="vi">@model = </span><span class="k">new</span> <span class="nx">Model</span> <span class="p">{</span><span class="nv">id: </span><span class="mi">42</span><span class="p">}</span>
+      <span class="vi">@view = </span><span class="k">new</span> <span class="nx">View</span> <span class="p">{</span><span class="nx">@model</span><span class="p">}</span>
+      <span class="nx">@model</span><span class="p">.</span><span class="nx">fetch</span><span class="p">()</span>
+
+    <span class="nv">check: </span><span class="nf">-&gt;</span> <span class="nx">@model</span><span class="p">.</span><span class="nx">id</span> <span class="o">is</span> <span class="mi">42</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript">  <span class="k">this</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="s1">&#39;something-strange&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">compose</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span><span class="nx">id</span><span class="o">:</span> <span class="mi">42</span><span class="p">});</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">View</span><span class="p">({</span><span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">});</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fetch</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="nx">check</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="mi">42</span><span class="p">;}</span>
+  <span class="p">});</span>
+</code></pre></div>
+  </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Event Handling &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Event Handling
+      
+    </h1>
+    
+    </header>
+    <p>For models and views, there are several wrapper methods for event handler registration. In contrast to the direct methods, they help prevent memory leakage, because the handlers will be removed correctly once the model or view is disposed. The methods will also be bound to the caller for ease of registration.</p>
+
+<h2 id="toc_0">Mediator</h2>
+
+<p>Global events use the <code>mediator</code> as an event channel. On most objects in chaplin (including models, views, and controllers), there are shortcuts for manipulating global events. These methods are mixed into eventable objects by way of the <a href="chaplin.event_broker.html">EventBroker</a>.</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">@subscribeEvent</span> <span class="s">&#39;dispatcher:dispatch&#39;</span><span class="p">,</span> <span class="nx">@dispatch</span>
+<span class="nx">@subscribeEvent</span> <span class="s">&#39;!router:route&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">arguments</span><span class="p">...</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="k">this</span><span class="p">.</span><span class="nx">subscribeEvent</span><span class="p">(</span><span class="s1">&#39;dispatcher:dispatch&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">dispatch</span><span class="p">);</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">subscribeEvent</span><span class="p">(</span><span class="s1">&#39;!router:route&#39;</span><span class="p">,</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">console</span><span class="p">));</span>
+</code></pre></div>
+<p>These are aliased to <code>Chaplin.mediator.*</code> with the additional benefit of automatically invoking <code>Chaplin.mediator.unsubscribe</code> in the <code>dispose</code> method of the eventable and providing some small type checking.</p>
+
+<h2 id="toc_1">Eventable</h2>
+
+<p>In views, the standard <code>model.on</code> way to register a handler for a model event should not be used. Use the memory-saving wrapper <code>listenTo</code> instead:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">@listenTo</span> <span class="nx">@model</span><span class="p">,</span> <span class="s">&#39;add&#39;</span><span class="p">,</span> <span class="nx">@doSomething</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">doSomething</span><span class="p">);</span>
+</code></pre></div>
+<p>In a model, it’s fine to use <code>on</code> directly as long as the handler is a method of the model itself.</p>
+
+<h2 id="toc_2">User Input</h2>
+
+<p>Most views handle user input by listening to DOM events. Backbone provides the <code>events</code> property to register event handlers declaratively. But this does not work nicely when views inherit from each other and a specific view needs to handle additional events.</p>
+
+<p>Chaplin’s <code>View</code> class provides the <code>delegate</code> method as a shortcut for <code>this.$el.on</code>. It has the same signature as the jQuery 1.7 <code>on</code> method. Some examples:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">@delegate</span> <span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="s">&#39;.like-button&#39;</span><span class="p">,</span> <span class="nx">@like</span>
+<span class="nx">@delegate</span> <span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="s">&#39;.close-button&#39;</span><span class="p">,</span> <span class="nx">@skip</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="k">this</span><span class="p">.</span><span class="nx">delegate</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="s1">&#39;.like-button&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">like</span><span class="p">);</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">delegate</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="s1">&#39;.close-button&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">skip</span><span class="p">);</span>
+</code></pre></div>
+<p><code>delegate</code> registers the handler at the topmost DOM element of the view (<code>this.el</code>) and catches events from nested elements using event bubbling. You can specify an optional selector to target nested elements.</p>
+
+<p>In addition, <code>delegate</code> automatically binds the handler to the view object, so <code>this</code> points to the view. This means <code>delegate</code> creates a wrapper function which acts as the handler. As a consequence, it’s currently impossible to unbind a specific handler. Please use <code>this.$el.off</code> directly to unbind all handlers of an event type for a selector:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">@$el</span><span class="p">.</span><span class="nx">off</span> <span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="s">&#39;.like-button&#39;</span>
+<span class="nx">@$el</span><span class="p">.</span><span class="nx">off</span> <span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="s">&#39;.close&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="s1">&#39;.like-button&#39;</span><span class="p">);</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="s1">&#39;.close&#39;</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="toc_3">Events catalog</h2>
+
+<p>Events that start with <code>!</code> immediately do something.</p>
+
+<ul>
+<li><code>beforeControllerDispose</code> — emitted before current controller is disposed.</li>
+<li><code>dispatcher:dispatch</code> — emitted after controller action has been started.</li>
+<li><code>!adjustTitle</code> — adjusts window title.</li>
+<li><code>!composer:retrieve</code> — gets composition.</li>
+<li><code>!composer:compose</code> — creates new composition</li>
+<li><code>!region:register</code> — registers new region.</li>
+<li><code>!region:unregister</code> — unregisters existing region</li>
+<li><code>!router:changeURL</code> — adjusts document URL without any side effects</li>
+<li><code>!router:route</code> — changes URL with all consequences</li>
+<li><code>!router:routeByName</code> — changes URL by route name</li>
+<li><code>!router:match</code> — tries to match URL with routes</li>
+</ul>
+
+<p><img src="http://s3.amazonaws.com/imgly_production/3362020/original.jpg" alt="Dance"></p>
+
+  </div>
+  </div>
+</body>
+</html>

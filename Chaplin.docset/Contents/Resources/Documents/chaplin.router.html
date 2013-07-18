@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.Router &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+ 
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.Router
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/lib/router.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p>This module is responsible for observing URL changes and matching them against a list of declared routes. If a declared route matches the current URL, a <code>router:match</code> event is triggered.</p>
+
+<p><code>Chaplin.Router</code> is a replacement for <a href="http://documentcloud.github.com/backbone/#Router">Backbone.Router</a> and does not inherit from it. It is a stand-alone implementation with several advantages over Backbone’s default. Why change the router implementation completely?</p>
+
+<p>In Backbone there are no controllers. Instead, Backbone’s <code>Router</code> maps routes to <em>its own methods</em>, serving two purposes and being more than just a router. Chaplin on the other hand delegates the handling of actions related to a specific route to controllers. Consequently, the router is really just a router. While the router has been rewritten for this purpose, Chaplin is using <code>Backbone.History</code> in the background. That is, Chaplin relies upon Backbone for handling hash URLs and interacting with the HTML5 History API (<code>pushState</code>).</p>
+
+<h2 id="toc_0">Declaring routes in the <code>routes</code> file</h2>
+
+<p>By convention, all application routes should be declared in a separate file, the <code>routes</code> module. This is a simple module in which a list of <code>match</code> statements serve to declare corresponding routes. For example:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">match</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;home#index&#39;</span>
+<span class="nx">match</span> <span class="s">&#39;likes/:id&#39;</span><span class="p">,</span> <span class="nv">controller: </span><span class="s">&#39;controllers/likes&#39;</span><span class="p">,</span> <span class="nv">action: </span><span class="s">&#39;show&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">match</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;home#index&#39;</span><span class="p">);</span>
+<span class="nx">match</span><span class="p">(</span><span class="s1">&#39;likes/:id&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;controllers/likes&#39;</span><span class="p">,</span> <span class="nx">action</span><span class="o">:</span> <span class="s1">&#39;show&#39;</span><span class="p">});</span>
+</code></pre></div>
+<p>Ruby on Rails developers may find <code>match</code> intuitively familiar. For more information on its usage, <a href="chaplin.router.html#match">see below</a>. Internally, route objects representing each entry are created. If a route matches, a <code>router:match</code> event is published, passing the route object and a <code>params</code> hash which contains name-value pairs for named placeholder parts of the path description (like <code>id</code> in the example above), as well as additional GET parameters.</p>
+
+<h2 id="methods">Methods</h2>
+
+<h3 class="module-member" id="createHistory">createHistory()</h3>
+
+<p>Creates the <code>Backbone.History</code> instance.</p>
+
+<h3 class="module-member" id="startHistory">startHistory()</h3>
+
+<p>Starts <code>Backbone.History</code> instance. This method should be called only after all routes have been registered.</p>
+
+<h3 class="module-member" id="stopHistory">stopHistory()</h3>
+
+<p>Stops the <code>Backbone.History</code> instance from observing URL changes.</p>
+
+<h3 class="module-member" id="match">match([pattern], [target], [options={}])</h3>
+
+<p>Connects a path with a controller action.</p>
+
+<ul>
+<li><strong>pattern</strong> (String): A pattern to match against the current path.</li>
+<li><strong>target</strong> (String): Specifies the controller action which is called if this route matches. Optionally, replaced by an equivalent description through the <code>options</code> hash.</li>
+<li><strong>options</strong> (Object): optional</li>
+</ul>
+
+<p>The <code>pattern</code> argument may contain named placeholders starting with a colon (<code>:</code>) followed by an identifier. For example, <code>&#39;products/:product_id/ratings/:id&#39;</code> will match the paths
+<code>/products/vacuum-cleaner/ratings/jane-doe</code> as well as <code>/products/8426/ratings/72</code>. The controller action will be passed the parameter hash <code>{product_id: &quot;vacuum-cleaner&quot;, id: &quot;jane-doe&quot;}</code> or <code>{product_id: &quot;8426&quot;, id: &quot;72&quot;}</code>, respectively.</p>
+
+<p>The <code>target</code> argument is a string with the controller name and the action name separated by the <code>#</code> character. For example, <code>&#39;likes#show&#39;</code> denotes the <code>show</code> action of the <code>LikesController</code>.</p>
+
+<p>You can also equivalently specify the target via the <code>action</code> and <code>controller</code> properties of the  <code>options</code> hash.</p>
+
+<p>The following properties of the <code>options</code> hash are recognized:</p>
+
+<ul>
+<li><p><strong>params</strong> (Object): Constant parameters that will be added to the params passed to the action and overwrite any values coming from a named placeholder</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">match</span> <span class="s">&#39;likes/:id&#39;</span><span class="p">,</span> <span class="s">&#39;likes#show&#39;</span><span class="p">,</span> <span class="nv">params: </span><span class="p">{</span><span class="nv">foo: </span><span class="s">&#39;bar&#39;</span><span class="p">}</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">match</span><span class="p">(</span><span class="s1">&#39;likes/:id&#39;</span><span class="p">,</span> <span class="s1">&#39;likes#show&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">params</span><span class="o">:</span> <span class="p">{</span><span class="nx">foo</span><span class="o">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">}});</span>
+</code></pre></div>
+<p>In this example, the <code>LikesController</code> will receive a <code>params</code> hash which has a <code>foo</code> property.</p></li>
+<li><p><strong>constraints</strong> (Object): For each placeholder you would like to put constraints on, pass a regular expression of the same name:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">match</span> <span class="s">&#39;likes/:id&#39;</span><span class="p">,</span> <span class="s">&#39;likes#show&#39;</span><span class="p">,</span> <span class="nv">constraints: </span><span class="p">{</span><span class="nv">id: </span><span class="sr">/^\d+$/</span><span class="p">}</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">match</span><span class="p">(</span><span class="s1">&#39;likes/:id&#39;</span><span class="p">,</span> <span class="s1">&#39;likes#show&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">constraints</span><span class="o">:</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="sr">/^\d+$/</span><span class="p">}});</span>
+</code></pre></div>
+<p>The <code>id</code> regular expression enforces the corresponding part of the path to be numeric. This route will match the path <code>/likes/5636</code>, but not <code>/likes/5636-icecream</code>.</p>
+
+<p>For every constraint in the constraints object, there must be a corresponding named placeholder, and it must satisfy the constraint in order for the route to match.
+For example, if you have a constraints object with three constraints: x, y, and z, then the route will match if and only if it has named parameters :x, :y, and :z and they all satisfy their respective regex.</p></li>
+<li><p><strong>name</strong> (String): Named routes can be used when reverse-generating paths using <code>Chaplin.helpers.reverse</code> helper:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">match</span> <span class="s">&#39;likes/:id&#39;</span><span class="p">,</span> <span class="s">&#39;likes#show&#39;</span><span class="p">,</span> <span class="nv">name: </span><span class="s">&#39;like&#39;</span>
+<span class="nx">Chaplin</span><span class="p">.</span><span class="nx">helpers</span><span class="p">.</span><span class="nx">reverse</span> <span class="s">&#39;like&#39;</span><span class="p">,</span> <span class="nv">id: </span><span class="mi">581</span>  <span class="c1"># =&gt; likes/581</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">match</span><span class="p">(</span><span class="s1">&#39;likes/:id&#39;</span><span class="p">,</span> <span class="s1">&#39;likes#show&#39;</span><span class="p">,</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;like&#39;</span><span class="p">});</span>
+<span class="nx">Chaplin</span><span class="p">.</span><span class="nx">helpers</span><span class="p">.</span><span class="nx">reverse</span><span class="p">(</span><span class="s1">&#39;like&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">581</span><span class="p">});</span>  <span class="c1">// =&gt; likes/581</span>
+</code></pre></div>
+<p>If no name is provided, the entry will automatically be named by the scheme <code>controller#action</code>, e.g. <code>likes#show</code>.</p></li>
+</ul>
+
+<h3 class="module-member" id="route">route([path])</h3>
+
+<p>Route a given path manually. Returns a boolean after it has been matched against the registered routes, corresponding to whether or not a match occurred.</p>
+
+<p>This looks similar to <code>Backbone.history.loadUrl</code>, but it accepts an absolute path with a leading slash (e.g. <code>/foo</code>) and passes a <code>changeURL</code> parameter to the route handler function.</p>
+
+<ul>
+<li><strong>path</strong>: an absolute path with a leading slash</li>
+</ul>
+
+<h3 class="module-member" id="routeHandler">routeHandler([path], [callback])</h3>
+
+<p>Handler for the global <code>!router:route</code> event, performs routing for the path given in <code>path</code>. If <code>callback</code> is provided, it will be called with a boolean value communicating whether or not there was a match.</p>
+
+<ul>
+<li><strong>path</strong>: an absolute path with a leading slash</li>
+<li><strong>callback</strong>: a callback which is called independent of routing success</li>
+</ul>
+
+<h3 class="module-member" id="changeURL">changeURL([url])</h3>
+
+<p>Changes the current URL and adds a history entry without triggering any route actions.</p>
+
+<ul>
+<li><strong>url</strong>: string that is going to be pushed as the page’s URL</li>
+</ul>
+
+<h3 class="module-member" id="changeURLHandler">changeURLHandler([url])</h3>
+
+<p>Handler for the globalized <code>!router:changeURL</code> event. Calls <code>this.changeURL</code>.</p>
+
+<ul>
+<li><strong>url</strong>: string that is going to be pushed as the page’s URL</li>
+</ul>
+
+<h3 class="module-member" id="dispose">dispose()</h3>
+
+<p>Stops the Backbone.history instance and removes it from the router object. Also unsubscribes any events attached to the Router. On compliant runtimes, the router object is frozen, see <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/freeze">Object.freeze</a>.</p>
+
+<h2 id="toc_1">Global events of <code>Chaplin.Router</code></h2>
+
+<p><code>Chaplin.Router</code> listens to these global events:</p>
+
+<ul>
+<li><code>!router:route path[, options], callback</code></li>
+<li><code>!router:routeByName name, params[, options], callback</code></li>
+<li><code>!router:reverse name, params[, options], callback</code></li>
+<li><code>!router:changeURL url[, options]</code></li>
+</ul>
+
+<h2 id="toc_2">Usage</h2>
+
+<p><code>Chaplin.Router</code> is a dependency of <a href="chaplin.application.html">Chaplin.Application</a> which should be extended by your main application class. Within your application class you should initialize the <code>Router</code> by calling <code>this.initRouter</code> (passing your routes module as an argument) followed by <code>this.startRouting</code>.</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;chaplin&#39;</span><span class="p">,</span>
+  <span class="s">&#39;routes&#39;</span>
+<span class="p">],</span> <span class="nf">(Chaplin, routes) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="k">class</span> <span class="nx">MyApplication</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span>
+    <span class="nv">title: </span><span class="s">&#39;The title for your application&#39;</span>
+
+    <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+      <span class="k">super</span>
+      <span class="nx">@initRouter</span> <span class="nx">routes</span>
+      <span class="nx">@startRouting</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">define</span><span class="p">([</span>
+  <span class="s1">&#39;chaplin&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;routes&#39;</span>
+<span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">Chaplin</span><span class="p">,</span> <span class="nx">routes</span><span class="p">)</span> <span class="p">{</span>
+  <span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+
+  <span class="kd">var</span> <span class="nx">MyApplication</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+    <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;The title for your application&#39;</span><span class="p">,</span>
+
+    <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">initialize</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">initRouter</span><span class="p">(</span><span class="nx">routes</span><span class="p">);</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">startRouting</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+
+  <span class="k">return</span> <span class="nx">MyApplication</span><span class="p">;</span>
+<span class="p">});</span>
+</code></pre></div>
+  </div>
+  </div>
+</body>
+</html>

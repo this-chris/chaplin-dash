@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.mediator &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+  
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.mediator
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/mediator.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p>It is one of the basic goals of Chaplin to enforce module encapsulation and independence and to direct communication through controlled channels. Chaplin’s <code>mediator</code> object is the enabler of this controlled communication. It implements the <a href="http://en.wikipedia.org/wiki/Publish/subscribe">Publish/Subscribe</a> (pub/sub) pattern to ensure loose coupling of application modules, while still allowing for ease of information exchange. Instead of making direct use of other parts of the application, modules communicate by events, similar to how changes in the DOM are communicated to client-side code. Modules can listen for and react to events, but also publish events of their own to give other modules the chance to react. There are only three basic methods for this application-wide communication: <code>subscribe</code>, <code>unsubscribe</code> and <code>publish</code>.</p>
+
+<p><strong>Note:</strong> If you want to give local pub/sub functionality to a class, take a look at the <a href="chaplin.event_broker.html">EventBroker</a>.</p>
+
+<h2 id="methods">Methods</h2>
+
+<h3 class="module-member" id="subscribe">subscribe(event, handler, [context])</h3>
+
+<p>A wrapper for <code>Backbone.Events.on</code>. See Backbone <a href="http://backbonejs.org/#Events-on">documentation</a> for more details.</p>
+
+<h3 class="module-member" id="unsubscribe">unsubscribe([event], [handler], [context])</h3>
+
+<p>A wrapper for <code>Backbone.Events.off</code>. See Backbone <a href="http://backbonejs.org/#Events-off">documentation</a> for more details.</p>
+
+<h3 class="module-member" id="publish">publish(event, [*args])</h3>
+
+<p>A wrapper for <code>Backbone.Events.trigger</code>. See Backbone <a href="http://backbonejs.org/#Events-trigger">documentation</a> for more details.</p>
+
+<h2 id="toc_0">Usage</h2>
+
+<p>In any module that needs to communicate with other modules, access to the application-wide pub/sub system can be gained by requiring <code>Chaplin</code> as a dependency. The mediator object is then available as <code>Chaplin.mediator</code>.</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">define</span> <span class="p">[</span><span class="s">&#39;chaplin&#39;</span><span class="p">,</span> <span class="s">&#39;otherdependency&#39;</span><span class="p">],</span> <span class="nf">(Chaplin, OtherDependency) -&gt;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">define</span><span class="p">([</span><span class="s1">&#39;chaplin&#39;</span><span class="p">,</span> <span class="s1">&#39;otherdependency&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">Chaplin</span><span class="p">,</span> <span class="nx">OtherDependency</span><span class="p">)</span> <span class="p">{})</span>
+</code></pre></div>
+<p>For example, if you have a session controller for logging in users, it will tell the mediator that the login occurred:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">Chaplin</span><span class="p">.</span><span class="nx">mediator</span><span class="p">.</span><span class="nx">publish</span> <span class="s">&#39;login&#39;</span><span class="p">,</span> <span class="nx">user</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">Chaplin</span><span class="p">.</span><span class="nx">mediator</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="nx">user</span><span class="p">);</span>
+</code></pre></div>
+<p>The mediator will propagate this event to any module that was subscribed to the <code>&#39;login&#39;</code> event, as in this example:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">Chaplin</span><span class="p">.</span><span class="nx">mediator</span><span class="p">.</span><span class="nx">subscribe</span> <span class="s">&#39;login&#39;</span><span class="p">,</span> <span class="nx">@doSomething</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">Chaplin</span><span class="p">.</span><span class="nx">mediator</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">doSomething</span><span class="p">);</span>
+</code></pre></div>
+<p>Finally, if this module needs to stop listening for the login event, it can simply unsubscribe at any time:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">Chaplin</span><span class="p">.</span><span class="nx">mediator</span><span class="p">.</span><span class="nx">unsubscribe</span> <span class="s">&#39;login&#39;</span><span class="p">,</span> <span class="nx">@doSomething</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">Chaplin</span><span class="p">.</span><span class="nx">mediator</span><span class="p">.</span><span class="nx">unsubscribe</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">doSomething</span><span class="p">);</span>
+</code></pre></div>
+  </div>
+  </div>
+</body>
+</html>

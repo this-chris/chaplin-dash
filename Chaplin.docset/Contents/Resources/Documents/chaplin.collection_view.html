@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.CollectionView &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.CollectionView
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/views/collection_view.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p>The <code>CollectionView</code> is responsible for displaying collections. For every item in a collection, it instantiates a corresponding item view and inserts it into the DOM. It reacts to collection change events (<code>add</code>, <code>remove</code> and <code>reset</code>) and provides basic filtering, caching of views, fallback content and loading indicators.</p>
+
+<h2 id="properties">Properties</h2>
+
+<h3 class="module-member" id="itemView">itemView</h3>
+
+<ul>
+<li><p><strong>a subclass of <code>Chaplin.View</code> (default <code>null</code>)</strong></p>
+
+<p>Your item view class, which will be instantiated for each individual item in the collection.</p></li>
+</ul>
+
+<h3 class="module-member" id="autoRender">autoRender</h3>
+
+<ul>
+<li><p><strong>boolean (default <code>true</code>)</strong></p>
+
+<p>Render the view automatically on instantiation. Other than in <code>Chaplin.View</code>, this is active by default. Your inheriting classes (and instantiated objects via the options hash) can set their own value.</p></li>
+</ul>
+
+<h3 class="module-member" id="renderItems">renderItems</h3>
+
+<ul>
+<li><p><strong>boolean (default <code>true</code>)</strong></p>
+
+<p>Should the view automatically render all items on instantiation?</p>
+
+<p>Can be passed during instantiation via the options hash.</p></li>
+</ul>
+
+<h3 class="module-member" id="animationDuration">animationDuration</h3>
+
+<ul>
+<li><p><strong>int, duration in ms (default <code>500</code>)</strong></p>
+
+<p>When new items are added, their views are faded in over a period of <code>animationDuration</code> milliseconds. Set to <code>0</code> to disable fade in.</p></li>
+</ul>
+
+<h3 class="module-member" id="listSelector">listSelector</h3>
+
+<ul>
+<li><p><strong>string (default <code>null</code>)</strong></p>
+
+<p>Specifies a selector for the container into which item views will be injected. If empty, the collection view’s <code>$el</code> is used.</p></li>
+</ul>
+
+<h3 class="module-member" id="itemSelector">itemSelector</h3>
+
+<ul>
+<li><p><strong>string (default <code>null</code>)</strong></p>
+
+<p>Selector identifying child elements considered part of this collection. If empty, all children of <code>listSelector</code> are considered.</p></li>
+</ul>
+
+<h3 class="module-member" id="loadingSelector">loadingSelector</h3>
+
+<ul>
+<li><p><strong>string (default <code>null</code>)</strong></p>
+
+<p>Selector for a loading indicator element which is shown while the collection is syncing.</p></li>
+</ul>
+
+<h3 class="module-member" id="fallbackSelector">fallbackSelector</h3>
+
+<ul>
+<li><p><strong>string (default <code>null</code>)</strong></p>
+
+<p>Selector for a fallback element which is shown if the collection is empty.</p></li>
+</ul>
+
+<h3 class="module-member" id="useCssAnimation">useCssAnimation</h3>
+
+<ul>
+<li><p><strong>boolean (default <code>false</code>)</strong></p>
+
+<p>By default, fading in is done by a JavaScript function which can be slow on mobile devices. CSS animations are faster, but require manual definition.</p></li>
+</ul>
+
+<h3 class="module-member" id="animationStartClass">animationStartClass</h3>
+
+<ul>
+<li><p><strong>string (default <code>&quot;animated-item-view&quot;</code>)</strong></p>
+
+<p>CSS classes that will be used when the hiding/showing of child views starts.</p></li>
+</ul>
+
+<h3 class="module-member" id="animationEndClass">animationEndClass</h3>
+
+<ul>
+<li><p><strong>string (default <code>&quot;animated-item-view-end&quot;</code>)</strong></p>
+
+<p>CSS classes that will be used when the hiding/showing of child views ends.</p></li>
+</ul>
+
+<h2 id="methods">Methods</h2>
+
+<p>Most of <code>CollectionView</code>’s methods should not need to be called externally. Modifying the underlying collection will automatically update the items on screen (for instance, fetching more models from the server), as the view listens for <code>add</code>, <code>remove</code>, and <code>reset</code> events by default.</p>
+
+<h3 class="module-member" id="initialize">initialize([options={}])</h3>
+
+<ul>
+<li><strong>options</strong>
+
+<ul>
+<li><strong>renderItems</strong> see <a href="chaplin.collection_view.html#renderItems">renderItems</a></li>
+<li><strong>itemView</strong> see <a href="chaplin.collection_view.html#itemView">itemView</a></li>
+<li><strong>filterer</strong> automatically calls <a href="chaplin.collection_view.html#filter">filter</a> if set</li>
+<li>all <a href="chaplin.view.html#initialize">View</a> and standard
+<a href="http://backbonejs.org/#View-constructor"><code>Backbone.View</code> options</a></li>
+</ul></li>
+</ul>
+
+<h3 class="module-member" id="filter">filter([filterer, [filterCallback]])</h3>
+
+<ul>
+<li><strong>function filterer (see below)</strong></li>
+<li><p><strong>function filterCallback (see below)</strong></p>
+
+<p>Calling <code>filter</code> directly with a <code>filterer</code> and <code>filterCallback</code> overrides the <code>CollectionView</code>’s properties of the same name.</p>
+
+<p>When called with no arguments it is a no-op.</p></li>
+</ul>
+
+<h3 class="module-member" id="filterer">filterer(item, index)</h3>
+
+<ul>
+<li><strong>Model item</strong></li>
+<li><strong>int index of item in collection</strong></li>
+<li><p><strong>returns boolean: is item included?</strong></p>
+
+<p>An iterator function that determines which items are shown. Can be passed in during instantiation via <code>options</code>. The function is optional; if not set all items will be included.</p></li>
+</ul>
+
+<h4 id="toc_0">Example</h4>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nv">filterer: </span><span class="nf">(item, index) -&gt;</span>
+  <span class="nx">item</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;color&#39;</span> <span class="o">is</span> <span class="s">&#39;red&#39;</span>
+
+<span class="p">...</span>
+
+<span class="nv">filterer: </span><span class="nf">(item, index) -&gt;</span>
+  <span class="nx">index</span> <span class="o">&lt;</span> <span class="mi">20</span> <span class="k">if</span> <span class="nx">@limit</span><span class="o">?</span> <span class="k">else</span> <span class="kc">true</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">filterer</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">item</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="s1">&#39;red&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">...</span>
+
+<span class="nx">filterer</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">limit</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="o">?</span> <span class="nx">index</span> <span class="o">&lt;</span> <span class="mi">20</span> <span class="o">:</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 class="module-member" id="filterCallback">filterCallback(view, included)</h3>
+
+<ul>
+<li><strong>View view</strong></li>
+<li><p><strong>boolean included</strong></p>
+
+<p>Called on each item in the collection during filtering. The default implementation hides excluded views.</p></li>
+</ul>
+
+<h4 id="toc_1">Example</h4>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nv">filterCallback: </span><span class="nf">(view, included) -&gt;</span>
+  <span class="nx">view</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">toggleClass</span><span class="p">(</span><span class="s">&#39;active&#39;</span><span class="p">,</span> <span class="nx">included</span><span class="p">)</span>
+
+<span class="p">...</span>
+
+<span class="nv">filterCallback: </span><span class="nf">(view, included) -&gt;</span>
+  <span class="nv">opts = </span><span class="k">if</span> <span class="nx">included</span> <span class="k">then</span> <span class="s">&#39;long-title, large-thumbnail&#39;</span> <span class="k">else</span> <span class="s">&#39;short-title, small-thumbnail&#39;</span>
+  <span class="nx">view</span><span class="p">.</span><span class="nx">showExtendedOptions</span><span class="p">(</span><span class="nx">opts</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">filterCallback</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">view</span><span class="p">,</span> <span class="nx">included</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">view</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">toggleClass</span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">,</span> <span class="nx">included</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">...</span>
+
+<span class="nx">filterCallback</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">view</span><span class="p">,</span> <span class="nx">included</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">opts</span> <span class="o">=</span> <span class="p">(</span><span class="nx">included</span><span class="p">)</span> <span class="o">?</span> <span class="s1">&#39;long-title, large-thumbnail&#39;</span> <span class="o">:</span> <span class="s1">&#39;short-title, small-thumbnail&#39;</span><span class="p">;</span>
+  <span class="nx">view</span><span class="p">.</span><span class="nx">showExtendedOptions</span><span class="p">(</span><span class="nx">opts</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 class="module-member" id="addCollectionListeners">addCollectionListeners()</h3>
+
+<p>By default adds event listeners for <code>add</code>, <code>remove</code>, and <code>reset</code> events. Can be extended to track more events.</p>
+
+<h3 class="module-member" id="getItemViews">getItemViews()</h3>
+
+<p>Returns a hash of views, with their <code>cid</code> properties as keys.</p>
+
+<h3 class="module-member" id="renderAllItems">renderAllItems()</h3>
+
+<p>Renders and inserts all items in the collection, triggering a <code>visibilityChange</code> event.</p>
+
+<h3 class="module-member" id="renderItem">renderItem(model)</h3>
+
+<ul>
+<li><p><strong>Model item</strong></p>
+
+<p>Instantiates and renders the view for an item using the <code>viewsByCid</code> hash as a cache to prevent multiple instantiations.</p></li>
+</ul>
+
+<h3 class="module-member" id="initItemView">initItemView(model)</h3>
+
+<ul>
+<li><p><strong>Model model</strong></p>
+
+<p>Returns an instance of the view class (as determined by the <code>itemView</code> property). Override this method to use several item view constructors depending on the model type or data.</p></li>
+</ul>
+
+<h3 class="module-member" id="insertView">insertView(item, view, [index], [enableAnimation])</h3>
+
+<ul>
+<li><strong>Model item</strong></li>
+<li><strong>View view</strong></li>
+<li><strong>int index (if unset will search through collection)</strong></li>
+<li><p><strong>boolean enableAnimation (default <code>true</code>)</strong></p>
+
+<p>Inserts a view into the list at the proper position and runs the <code>this.filterer</code> function.</p></li>
+</ul>
+
+<h3 class="module-member" id="removeViewForItem">removeViewForItem(model)</h3>
+
+<ul>
+<li><p><strong>Model item</strong></p>
+
+<p>Removes the view for an item, triggering a <code>visibilityChange</code> event.</p></li>
+</ul>
+
+<h3 class="module-member" id="updateVisibleItems">updateVisibleItems(item, [includedInFilter], [triggerEvent])</h3>
+
+<ul>
+<li><strong>Model item</strong></li>
+<li><strong>boolean includedInFilter</strong></li>
+<li><p><strong>triggerEvent (default <code>true</code>)</strong></p>
+
+<p>Updates the list of visible items and triggers a <code>visibilityChanged</code> event if an item changed its visibility.</p></li>
+</ul>
+
+<h2 id="toc_2">Usage</h2>
+
+<p>Most inheriting classes of <code>CollectionView</code> should be very small, with the majority of implementations only needing to overwrite the <code>itemView</code> property. Standard <code>View</code> conventions like adding <code>this.listenTo</code> handlers should still take place in <code>initialize</code>, but the majority of collection-specific logic is handled by this class.</p>
+
+<h4 id="toc_3">Example</h4>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="k">class</span> <span class="nx">LikesView</span> <span class="k">extends</span> <span class="nx">CollectionView</span>
+  <span class="nv">autoRender: </span><span class="kc">true</span>
+  <span class="nv">className: </span><span class="s">&#39;likes-list&#39;</span>
+  <span class="nv">itemView: </span><span class="nx">LikeView</span>
+  <span class="nv">tagName: </span><span class="s">&#39;ul&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">LikesView</span> <span class="o">=</span> <span class="nx">CollectionView</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">autoRender</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">className</span><span class="o">:</span> <span class="s1">&#39;likes-list&#39;</span><span class="p">,</span>
+  <span class="nx">itemView</span><span class="o">:</span> <span class="nx">LikeView</span><span class="p">,</span>
+  <span class="nx">tagName</span><span class="o">:</span> <span class="s1">&#39;ul&#39;</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 id="toc_4">Real World Examples</h3>
+
+<ul>
+<li><a href="https://github.com/paulmillr/ostio/blob/master/app/views/post/posts-view.coffee">Ost.io PostsView</a></li>
+<li><a href="https://github.com/chaplinjs/facebook-example/blob/master/coffee/views/likes_view.coffee">Facebook LikesView</a></li>
+<li><a href="https://github.com/akre54/FT/blob/master/app/views/customers_collection_view.coffee">FarmTab CustomersView</a></li>
+</ul>
+
+  </div>
+  </div>
+</body>
+</html>

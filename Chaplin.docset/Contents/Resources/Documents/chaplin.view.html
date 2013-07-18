@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.View &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+  
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.View
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/views/view.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p>Chaplin’s <code>View</code> class is a highly extended and adapted subclass of <code>Backbone.View</code>. By default, all views should inherit from this class to take advantage of its additions and improved memory management.</p>
+
+<p>Views may subscribe to global pub/sub and model/collection events in a manner which allows proper disposal. They have a standard <code>render</code> method which renders a template into the view’s root element (<code>this.el</code>).</p>
+
+<p>The templating function is provided by <code>this.getTemplateFunction</code>. The input data for the template is provided by <code>this.getTemplateData</code>. By default, this method just returns an object delegating to the model attributes. Views might override the method to process the raw model data for the view.</p>
+
+<p>In addition to Backbone’s <code>events</code> hash and the <code>delegateEvents</code> method, Chaplin has the <code>delegate</code> method to register user input handlers. The declarative <code>events</code> hash doesn’t work well for class hierarchies when several <code>initialize</code> methods register their own handlers. The programatic approach of <code>delegate</code> solves these problems.</p>
+
+<p>When establishing bindings between view and model, <code>this.model.on()</code> should not be used directly. Instead,  Backbone’s built-in methods for handling bindings, such as <code>this.listenTo(this.model, ...)</code> should be used, so handlers can be removed automatically on view disposal to prevent memory leakage.</p>
+
+<h2 id="toc_0">Features and purpose</h2>
+
+<ul>
+<li>Rendering model data using templates in a conventional way</li>
+<li>Robust and memory-safe model binding</li>
+<li>Automatic rendering and appending to the DOM</li>
+<li>Registering regions</li>
+<li>Creating subviews</li>
+<li>Disposal which cleans up all subviews, model bindings and pub/sub events</li>
+</ul>
+
+<h2 id="methods">Methods</h2>
+
+<h3 class="module-member" id="initialize">initialize(options)</h3>
+
+<ul>
+<li><p><strong>options (default: empty hash)</strong></p>
+
+<ul>
+<li><code>autoRender</code> see <a href="chaplin.view.html#autoRender">autoRender</a></li>
+<li><code>autoAttach</code> see <a href="chaplin.view.html#autoAttach">autoAttach</a></li>
+<li><code>container</code> see <a href="chaplin.view.html#container">container</a></li>
+<li><code>containerMethod</code> see <a href="chaplin.view.html#containerMethod">containerMethod</a></li>
+<li>all standard <a href="http://backbonejs.org/#View-constructor">Backbone constructor options</a> (<code>model</code>, <code>collection</code>, <code>el</code>, <code>id</code>, <code>className</code>, <code>tagName</code> and <code>attributes</code>)</li>
+</ul>
+
+<p><code>options</code> may be specific on the view class or passed to the constructor. Passing in options during instantiation overrides the View prototype&#39;s defaults.</p>
+
+<p>Views must always call <code>super</code> from their <code>initialize</code> methods. Unlike Backbone’s <code>initialize</code> method, Chaplin’s <code>initialize</code> is required to create the instance’s subviews and listen for model or collection disposal.</p></li>
+</ul>
+
+<h2 id="toc_1">Rendering: <code>getTemplateFunction</code>, <code>render</code>, …</h2>
+
+<p>Your application should provide a standard way of rendering DOM nodes by creating HTML from templates and template data. Chaplin provides <code>getTemplateFunction</code> and <code>getTemplateData</code> for this purpose.</p>
+
+<p>Set <a href="chaplin.view.html#autoRender"><code>autoRender</code></a> to true to enable rendering upon View instantiation. If <a href="chaplin.view.html#autoAttach"><code>autoAttach</code></a> is enabled, this will automatically append the view to a <a href="chaplin.view.html#container"><code>container</code></a>. The method of appending can be overridden using the <a href="chaplin.view.html#containerMethod"><code>containerMethod</code></a> property (to <code>html</code>, <code>before</code>, <code>prepend</code>, etc).</p>
+
+<h3 class="module-member" id="getTemplateFunction">getTemplateFunction()</h3>
+
+<ul>
+<li><p><strong>function (throws error if not overriden)</strong></p>
+
+<p>Core method that returns the compiled template function. Usually set application-wide in a base view class.</p>
+
+<p>A common implementation will take a passed in <code>template</code> string and return a compiled template function (e.g. a Handlebars or Underscore template function).</p></li>
+</ul>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="vi">@template = </span><span class="nx">require</span> <span class="s">&#39;templates/comment_view&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="k">this</span><span class="p">.</span><span class="nx">template</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;templates/comment_view&#39;</span><span class="p">);</span>
+</code></pre></div>
+<p>or if using templates in the DOM</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="vi">@template = </span><span class="nx">$</span><span class="p">(</span><span class="s">&#39;#comment_view_template&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="k">this</span><span class="p">.</span><span class="nx">template</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#comment_view_template&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">();</span>
+</code></pre></div>
+<p>if using Handlebars</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nv">getTemplateFunction: </span><span class="nf">-&gt;</span>
+  <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">compile</span> <span class="nx">@template</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">getTemplateFunction</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>or if using underscore templates</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nv">getTemplateFunction: </span><span class="nf">-&gt;</span>
+  <span class="nx">_</span><span class="p">.</span><span class="nx">template</span> <span class="nx">@template</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">getTemplateFunction</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Packages like <a href="https://github.com/paulmillr/brunch-with-chaplin">Brunch With Chaplin</a> precompile the template functions to improve application performance.</p>
+
+<h3 class="module-member" id="getTemplateData">getTemplateData()</h3>
+
+<ul>
+<li><p><strong>function that returns Object</strong></p>
+
+<p>Empty method which returns the prepared model data for the template. Should be overriden by inheriting classes (often from model data).</p></li>
+</ul>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nv">getTemplateData: </span><span class="nf">-&gt;</span>
+  <span class="nx">@model</span><span class="p">.</span><span class="nx">attributes</span>
+
+<span class="p">...</span>
+
+<span class="nv">getTemplateData: </span><span class="nf">-&gt;</span>
+  <span class="nv">title: </span><span class="s">&#39;Winnetou&#39;</span><span class="p">,</span> <span class="nv">author: </span><span class="s">&#39;Karl May&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">getTemplateData</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">attributes</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">...</span>
+
+<span class="nx">getTemplateData</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span><span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;Winnetou&#39;</span><span class="p">,</span> <span class="nx">author</span><span class="o">:</span> <span class="s1">&#39;Karl May&#39;</span><span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Often overriden in a base model class to intelligently pick out attributes.</p>
+
+<h3 class="module-member" id="render">render</h3>
+
+<p>By default calls the <code>templateFunction</code> with the <code>templateData</code> and sets the HTML of the <code>$el</code>. Can be overriden in your base view if needed, though this should be suitable for the majority of cases.</p>
+
+<h3 class="module-member" id="attach">attach</h3>
+
+<p>The <code>attach</code> method is called after the prototype chain has completed for <code>View#render</code>. It attaches the view to its <code>container</code> element and fires an <code>&#39;addedToDOM&#39;</code> event on the view on success.</p>
+
+<h2 id="toc_2">Options for auto-rendering and DOM appending</h2>
+
+<h3 class="module-member" id="autoRender">autoRender</h3>
+
+<ul>
+<li><strong>boolean (default <code>false</code>)</strong></li>
+</ul>
+
+<p>Specifies whether the view’s <code>render</code> method should be called automatically when a view is instantiated.</p>
+
+<h3 class="module-member" id="autoAttach">autoAttach</h3>
+
+<ul>
+<li><strong>boolean (default <code>true</code></strong></li>
+</ul>
+
+<p>Specifies whether the view’s <code>attach</code> method should be called automatically after <code>render</code> was called.</p>
+
+<h3 class="module-member" id="container">container</h3>
+
+<ul>
+<li><strong>jQuery object, selector string, or element (default <code>null</code>)</strong></li>
+</ul>
+
+<p>A container element into which the view’s element will be rendered. This may be a DOM element, a jQuery object or a selector string. In the latter case the container must already exist in the DOM.</p>
+
+<p>Set this property in a derived class to specify the container element. As an alternative you might pass a <code>container</code> option to the constructor.</p>
+
+<p>When the <code>container</code> is set and <a href="chaplin.view.html#autoAttach"><code>autoAttach</code></a> is true, the view is automatically inserted into the container when it’s rendered (using the <a href="chaplin.view.html#attach"><code>attach</code></a> method).</p>
+
+<p>A container is often an empty element within a parent view.</p>
+
+<h3 class="module-member" id="containerMethod">containerMethod</h3>
+
+<ul>
+<li><strong>String, jQuery object method (default <code>&#39;append&#39;</code>)</strong></li>
+</ul>
+
+<p>Method which is used for adding the view to the DOM via the <code>container</code> element. (Like jQuery’s <code>html</code>, <code>prepend</code>, <code>append</code>, <code>after</code>, <code>before</code> etc.)</p>
+
+<h2 id="toc_3">Event delegation</h2>
+
+<h3 class="module-member" id="listen">listen</h3>
+
+<ul>
+<li><p><strong>Object</strong></p>
+
+<p>Property that contains declarative event bindings to non-DOM listeners. Just like <a href="http://backbonejs.org/#View">Backbone.View#events</a>, but for models/collections/mediator etc.</p></li>
+</ul>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="k">class</span> <span class="nx">SomeView</span> <span class="k">extends</span> <span class="nx">View</span>
+  <span class="nv">listen:</span>
+    <span class="c1"># Listen to view events with @on.</span>
+    <span class="s">&#39;eventName&#39;</span><span class="o">:</span> <span class="s">&#39;methodName&#39;</span>
+    <span class="c1"># Same as @listenTo @model, &#39;change:foo&#39;, this[methodName].</span>
+    <span class="s">&#39;change:foo model&#39;</span><span class="o">:</span> <span class="s">&#39;methodName&#39;</span>
+    <span class="c1"># Same as @listenTo @collection, &#39;reset&#39;, this[methodName].</span>
+    <span class="s">&#39;reset collection&#39;</span><span class="o">:</span> <span class="s">&#39;methodName&#39;</span>
+    <span class="c1"># Same as @subscribeEvent &#39;pubSubEvent&#39;, this[methodName].</span>
+    <span class="s">&#39;pubSubEvent mediator&#39;</span><span class="o">:</span> <span class="s">&#39;methodName&#39;</span>
+    <span class="c1"># The value can also be a function.</span>
+    <span class="s">&#39;eventName&#39;</span><span class="o">:</span> <span class="nf">-&gt;</span> <span class="nx">alert</span> <span class="s">&#39;Hello!&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">SomeView</span> <span class="o">=</span> <span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">listen</span><span class="o">:</span> <span class="p">{</span>
+    <span class="c1">// Listen to view events with @on.</span>
+    <span class="s1">&#39;eventName&#39;</span><span class="o">:</span> <span class="s1">&#39;methodName&#39;</span><span class="p">,</span>
+    <span class="c1">// Same as @listenTo @model, &#39;change:foo&#39;, this[methodName].</span>
+    <span class="s1">&#39;change:foo model&#39;</span><span class="o">:</span> <span class="s1">&#39;methodName&#39;</span><span class="p">,</span>
+    <span class="c1">// Same as @listenTo @collection, &#39;reset&#39;, this[methodName].</span>
+    <span class="s1">&#39;reset collection&#39;</span><span class="o">:</span> <span class="s1">&#39;methodName&#39;</span><span class="p">,</span>
+    <span class="c1">// Same as @subscribeEvent &#39;pubSubEvent&#39;, this[methodName].</span>
+    <span class="s1">&#39;pubSubEvent mediator&#39;</span><span class="o">:</span> <span class="s1">&#39;methodName&#39;</span><span class="p">,</span>
+    <span class="c1">// The value can also be a function.</span>
+    <span class="s1">&#39;eventName&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Hello!&#39;</span><span class="p">)}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 class="module-member" id="delegate">delegate(eventType, [selector], handler)</h3>
+
+<ul>
+<li><strong>String eventType - jQuery DOM event (e.g. <code>&#39;click&#39;</code>, <code>&#39;focus&#39;</code>, etc.)</strong>,</li>
+<li><strong>String selector (optional, if not set will bind to the view’s <code>$el</code>)</strong>,</li>
+<li><strong>function handler (automatically bound to <code>this</code>)</strong></li>
+<li><strong>returns the bound handler function</strong></li>
+</ul>
+
+<p>Backbone’s <code>events</code> hash doesn&#39;t work well with inheritance, so Chaplin provides the <code>delegate</code> method for this purpose. <code>delegate</code> is a wrapper for jQuery’s <code>this.$el.on</code> method, and has the same method signature.</p>
+
+<p>For events affecting the whole view the signature is <code>delegate(eventType, handler)</code>:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">@delegate</span><span class="p">(</span><span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="nx">@clicked</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="k">this</span><span class="p">.</span><span class="nx">delegate</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">clicked</span><span class="p">);</span>
+</code></pre></div>
+<p>For events only affecting an element or colletion of elements in the view, pass a selector, too, <code>delegate(eventType, selector, handler)</code>:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">@delegate</span><span class="p">(</span><span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="s">&#39;button.confirm&#39;</span><span class="p">,</span> <span class="nx">@confirm</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="k">this</span><span class="p">.</span><span class="nx">delegate</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="s1">&#39;button.confirm&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">confirm</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="toc_4">undelegate(eventType, [selector], handler)</h3>
+
+<ul>
+<li><strong>String eventType - jQuery DOM event (e.g. <code>&#39;click&#39;</code>, <code>&#39;focus&#39;</code>, etc.)</strong>,</li>
+<li><strong>String selector (optional, if not set will bind to the view’s <code>$el</code>)</strong>,</li>
+<li><strong>function handler (automatically bound to <code>this</code>)</strong></li>
+<li><strong>returns the bound handler function</strong></li>
+</ul>
+
+<p>Allows to remove DOM event handlers that have been added using <code>delegate</code>. <code>undelegate</code> is a wrapper for jQuery’s <code>this.$el.off</code> method, and has the same method signature.</p>
+
+<p>Since <code>delegate</code> automatically binds the handler function to the view, you need to pass the bound handler to remove it. This is a new function and not the same as the original handler passed to <code>delegate</code>.</p>
+
+<p>To allow this, <code>delegate</code> returns the bound handler so you can save it for later removal:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="c1"># CoffeeScript</span>
+<span class="vi">@boundConfirm = </span><span class="nx">@delegate</span> <span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="s">&#39;button.confirm&#39;</span><span class="p">,</span> <span class="nx">@confirm</span>
+<span class="c1"># Later:</span>
+<span class="nx">@undelegate</span> <span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="s">&#39;button.confirm&#39;</span><span class="p">,</span> <span class="nx">@boundConfirm</span>
+</code></pre></div><div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="o">//</span> <span class="nx">JavaScript</span>
+<span class="k">this</span><span class="p">.</span><span class="nv">boundConfirm = </span><span class="k">this</span><span class="p">.</span><span class="nx">delegate</span><span class="p">(</span><span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="s">&#39;button.confirm&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">confirm</span><span class="p">);</span>
+<span class="o">//</span> <span class="nv">Later:</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">undelegate</span><span class="p">(</span><span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="s">&#39;button.confirm&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">boundConfirm</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="toc_5">Regions</h2>
+
+<p>Regions provide a means to give canonical names to selectors in the view. Instead of binding a view to <code>#page .container &gt; .sidebar</code> (via the container) you would bind it to the declared region <code>sidebar</code> which is registered by the view that contained <code>#page .container &gt; .sidebar</code>. This decouples views from those that nest them. It allows for layouts to be drastically changed without changing the template.</p>
+
+<h3 class="module-member" id="region">region</h3>
+
+<p>This is the region that the view will be bound to. This property is not meant to be set on the prototype — it is meant to be passed in as part of the options hash.</p>
+
+<p>Both of the following code snippets will bind the view <code>MyView</code> to the declared region <code>sidebar</code>.</p>
+
+<p>This one sets the region directly on the prototype:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="c1"># myview.coffee</span>
+<span class="k">class</span> <span class="nx">MyView</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">region: </span><span class="s">&#39;sidebar&#39;</span>
+
+<span class="c1"># my_controller.coffee</span>
+<span class="c1"># [...] inside action method</span>
+<span class="vi">@view = </span><span class="k">new</span> <span class="nx">MyView</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="c1">// myview.js</span>
+<span class="kd">var</span> <span class="nx">MyView</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;sidebar&#39;</span>
+<span class="p">});</span>
+
+<span class="c1">// my_controller.js</span>
+<span class="c1">// [...] inside action method</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyView</span><span class="p">();</span>
+</code></pre></div>
+<p>And this one passes in the value of region to the view constructor:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="c1"># myview.coffee</span>
+<span class="k">class</span> <span class="nx">MyView</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span>
+
+<span class="c1"># my_controller.coffee</span>
+<span class="c1"># [...] inside action method</span>
+<span class="vi">@view = </span><span class="k">new</span> <span class="nx">MyView</span> <span class="p">{</span><span class="nv">region: </span><span class="s">&#39;sidebar&#39;</span><span class="p">}</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="c1">// myview.js</span>
+<span class="kd">var</span> <span class="nx">MyView</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({});</span>
+
+<span class="c1">// my_controller.js</span>
+<span class="c1">// [...] inside action method</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyView</span><span class="p">({</span><span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;sidebar&#39;</span><span class="p">});</span>
+</code></pre></div>
+<p>However the latter case is more flexible, as it leaves it to the controller to decide (through whatever logic) where to place the view.</p>
+
+<h3 class="module-member" id="regions">regions</h3>
+
+<p>A region registration hash that works much like the declarative events hash present in Backbone. Region names are specifyed as keys, region selectors as values. If the region selector is empty (<code>&#39;&#39;</code>), the view’s own DOM element will be selected.</p>
+
+<p>The following snippet will register the named regions <code>sidebar</code> and <code>body</code> and bind them to their respective selectors directly on the prototype:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="c1"># myview.coffee</span>
+<span class="k">class</span> <span class="nx">MyView</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">regions:</span>
+    <span class="s">&#39;sidebar&#39;</span><span class="o">:</span> <span class="s">&#39;#page .container &gt; .sidebar&#39;</span>
+    <span class="s">&#39;body&#39;</span><span class="o">:</span> <span class="s">&#39;#page .container &gt; .content&#39;</span>
+    <span class="s">&#39;myview&#39;</span><span class="o">:</span> <span class="s">&#39;&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="c1">// myview.js</span>
+<span class="kd">var</span> <span class="nx">MyView</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span><span class="p">({</span>
+  <span class="nx">regions</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;sidebar&#39;</span><span class="o">:</span> <span class="s1">&#39;#page .container &gt; .sidebar&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;body&#39;</span><span class="o">:</span> <span class="s1">&#39;#page .container &gt; .content&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;myview&#39;</span><span class="o">:</span> <span class="s1">&#39;&#39;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>And this one passes in the values of regions to the view constructor:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="c1"># myview.coffee</span>
+<span class="k">class</span> <span class="nx">MyView</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span>
+
+<span class="c1"># my_controller.coffee</span>
+<span class="c1"># [...] inside action method</span>
+<span class="vi">@view = </span><span class="k">new</span> <span class="nx">MyView</span>
+  <span class="nv">regions:</span>
+    <span class="s">&#39;sidebar&#39;</span><span class="o">:</span> <span class="s">&#39;#page .container &gt; .sidebar&#39;</span>
+    <span class="s">&#39;body&#39;</span><span class="o">:</span> <span class="s">&#39;#page .container &gt; .content&#39;</span>
+    <span class="s">&#39;myview&#39;</span><span class="o">:</span> <span class="s">&#39;&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="c1">// myview.js</span>
+<span class="kd">var</span> <span class="nx">MyView</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span><span class="p">({});</span>
+
+<span class="c1">// my_controller.js</span>
+<span class="c1">// [...] inside action method</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyView</span><span class="p">({</span>
+  <span class="nx">regions</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;sidebar&#39;</span><span class="o">:</span> <span class="s1">&#39;#page .container &gt; .sidebar&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;body&#39;</span><span class="o">:</span> <span class="s1">&#39;#page .container &gt; .content&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;myview&#39;</span><span class="o">:</span> <span class="s1">&#39;&#39;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>When the view is initialized, the regions hashes of all base classes are gathered and registered as well. When two views in an inheritance tree both register a region of the same name, the selector of the most-derived view is used.</p>
+
+<h3 class="module-member" id="registerRegion">registerRegion(selector, name)</h3>
+
+<ul>
+<li><strong>String selector</strong>,</li>
+<li><strong>String name</strong></li>
+</ul>
+
+<p>Functionally registers a region exactly the same as if it were in the regions hash. It is meant to be called in the <code>initialize</code> method as in the following code snippet (which is identical to the previous one using the <code>regions</code> hash).</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="k">class</span> <span class="nx">MyView</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span>
+  <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+    <span class="k">super</span>
+    <span class="nx">@registerRegion</span> <span class="s">&#39;sidebar&#39;</span><span class="p">,</span> <span class="s">&#39;#page .container &gt; .sidebar&#39;</span>
+    <span class="nx">@registerRegion</span> <span class="s">&#39;body&#39;</span><span class="p">,</span> <span class="s">&#39;#page .container &gt; .content&#39;</span>
+    <span class="nx">@registerRegion</span> <span class="s">&#39;myview&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">MyView</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">initialize</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">registerRegion</span><span class="p">(</span><span class="s1">&#39;sidebar&#39;</span><span class="p">,</span> <span class="s1">&#39;#page .container &gt; .sidebar&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">registerRegion</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="s1">&#39;#page .container &gt; .content&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">registerRegion</span><span class="p">(</span><span class="s1">&#39;myview&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 class="module-member" id="unregisterRegion">unregisterRegion(name)</h3>
+
+<ul>
+<li><strong>String name</strong></li>
+</ul>
+
+<p>Removes the named region as if it was not registered. Does nothing if there is no region named <code>name</code>.</p>
+
+<h3 class="module-member" id="unregisterAllRegions">unregisterAllRegions()</h3>
+
+<p>Removes all regions registered by this view, automatically called on <code>View#dispose</code>.</p>
+
+<h2 id="toc_6">Subviews</h2>
+
+<p>Subviews are usually used for limited scenarios when you want to split a view up into logical sections that are continuously re-rendered or form wizards, etc., though this is <em>only</em> advisable, as long as they all dealing with the same model.</p>
+
+<h3 class="module-member" id="subview">subview(name, [view])</h3>
+
+<ul>
+<li><strong>String name</strong>,</li>
+<li><strong>View view (when setting the subview)</strong></li>
+</ul>
+
+<p>Register a subview with the given <code>name</code>. Calling the method with just the <code>name</code> argument will return the subview associated with that <code>name</code>.</p>
+
+<p>This just registers a subview so it can be disposed when its parent view is disposed. Subviews are not automatically rendered and attached to the current view. You can use the <code>autoRender</code> and <code>container</code> options to render and attach the view.</p>
+
+<p>If you register a subview with the same name twice, the previous subview will be disposed. This ensures that there is only one subview under the given name.</p>
+
+<h3 class="module-member" id="removeSubview">removeSubview(nameOrView)</h3>
+
+<p>Remove the specified subview and dispose it. Can be called with either the <code>name</code> associated with the subview, or a reference to the subview instance.</p>
+
+<h4 id="toc_7">Usage</h4>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="k">class</span> <span class="nx">YourView</span> <span class="k">extends</span> <span class="nx">View</span>
+
+  <span class="nv">render: </span><span class="nf">-&gt;</span>
+    <span class="k">super</span>
+    <span class="nv">infoboxView = </span><span class="k">new</span> <span class="nx">InfoBox</span> <span class="nv">autoRender: </span><span class="kc">true</span><span class="p">,</span> <span class="nv">container: </span><span class="nx">@el</span>
+    <span class="nx">@subview</span> <span class="s">&#39;infobox&#39;</span><span class="p">,</span> <span class="nx">infoboxView</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">YourView</span> <span class="o">=</span> <span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">View</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">render</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">infoboxView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">InfoBox</span><span class="p">({</span><span class="nx">autoRender</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">container</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">});</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">subview</span><span class="p">(</span><span class="s1">&#39;infobox&#39;</span><span class="p">,</span> <span class="nx">infoboxView</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<h1 id="toc_8">Publish/Subscribe</h1>
+
+<p><code>View</code> includes the <a href="chaplin.event_broker.html">EventBroker</a> mixin to provide publish/subscribe capabilities using the <a href="chaplin.mediator.html">mediator</a></p>
+
+<h2 id="toc_9"><a href="chaplin.event_broker.html#methods">Methods</a> of <code>Chaplin.EventBroker</code></h2>
+
+<h3 class="module-member" id="publishEvent">publishEvent(event, arguments...)</h3>
+
+<p>Publish the global <code>event</code> with <code>arguments</code>.</p>
+
+<h3 class="module-member" id="subscribeEvent">subscribeEvent(event, handler)</h3>
+
+<p>Unsubcribe the <code>handler</code> for the given <code>event</code> (if it exists) before subscribing it. It is like <code>Chaplin.mediator.subscribe</code> except it cannot subscribe twice.</p>
+
+<h3 class="module-member" id="unsubscribeEvent">unsubscribeEvent(event, handler)</h3>
+
+<p>Unsubcribe the <code>handler</code> to the <code>event</code>. It is like <code>Chaplin.mediator.unsubscribe</code>.</p>
+
+<h3 class="module-member" id="unsubscribeAllEvents">unsubscribeAllEvents()</h3>
+
+<p>Unsubcribe all handlers for all events.</p>
+
+  </div>
+  </div>
+</body>
+</html>

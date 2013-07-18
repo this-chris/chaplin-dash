@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.EventBroker &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+ 
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.EventBroker
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/lib/event_broker.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p>The <code>EventBroker</code> offers an interface to interact with <a href="chaplin.mediator.html">Chaplin.mediator</a>, meant to be used as a mixin.</p>
+
+<h2 id="methods">Methods</h2>
+
+<h3 class="module-member" id="publishEvent">publishEvent(event, arguments...)</h3>
+
+<p>Publishes <code>event</code> globablly, passing <code>arguments</code> along for interested subscribers.</p>
+
+<h3 class="module-member" id="subscribeEvent">subscribeEvent(event, handler)</h3>
+
+<p>Subscribes the <code>handler</code> to the given <code>event</code>. If <code>handler</code> already subscribed to <code>event</code>, it will be removed as a subscriber and added afresh. This functions like <code>Chaplin.mediator.subscribe</code> except it cannot subscribe twice.</p>
+
+<h3 class="module-member" id="unsubscribeEvent">unsubscribeEvent(event, handler)</h3>
+
+<p>Unsubcribe the <code>handler</code> from the <code>event</code>. This functions like <code>Chaplin.mediator.unsubscribe</code>.</p>
+
+<h3 class="module-member" id="unsubscribeAllEvents">unsubscribeAllEvents()</h3>
+
+<p>Unsubcribe from any subscriptions made through this objects <code>subscribeEvent</code> method.</p>
+
+<h2 id="toc_0">Usage</h2>
+
+<p>To give a class these pub/sub capabilities, you just need to make it extend <code>Chaplin.EventBroker</code>: <span class="coffeescript"><code>_.extend @prototype, EventBroker</code></span> <span class="javascript"><code>_.extend(this.prototype, EventBroker)</code></span>.</p>
+
+  </div>
+  </div>
+</body>
+</html>

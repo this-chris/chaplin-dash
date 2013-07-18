@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.helpers &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+ 
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.helpers
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/lib/helpers.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p>Helpers that use Chaplin components (global event bus etc.).</p>
+
+<h3 class="module-member" id="reverse">reverse(routeName[,...params])</h3>
+
+<p>Returns the URL for a named route, appropriately filling in values given as <code>params</code>.</p>
+
+<p>For example, if you have declared the route</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">match</span> <span class="s">&#39;/users/:login/profile&#39;</span><span class="p">,</span> <span class="s">&#39;users#show&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">match</span><span class="p">(</span><span class="s1">&#39;/users/:login/profile&#39;</span><span class="p">,</span> <span class="s1">&#39;users#show&#39;</span><span class="p">);</span>
+</code></pre></div>
+<p>you can use</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">Chaplin</span><span class="p">.</span><span class="nx">helpers</span><span class="p">.</span><span class="nx">reverse</span> <span class="s">&#39;users#show&#39;</span><span class="p">,</span> <span class="nv">login: </span><span class="s">&#39;paulmillr&#39;</span>
+<span class="c1"># or</span>
+<span class="nx">Chaplin</span><span class="p">.</span><span class="nx">helpers</span><span class="p">.</span><span class="nx">reverse</span> <span class="s">&#39;users#show&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;paulmillr&#39;</span><span class="p">]</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">Chaplin</span><span class="p">.</span><span class="nx">helpers</span><span class="p">.</span><span class="nx">reverse</span><span class="p">(</span><span class="s1">&#39;users#show&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">login</span><span class="o">:</span> <span class="s1">&#39;paulmillr&#39;</span><span class="p">});</span>
+<span class="c1">// or</span>
+<span class="nx">Chaplin</span><span class="p">.</span><span class="nx">helpers</span><span class="p">.</span><span class="nx">reverse</span><span class="p">(</span><span class="s1">&#39;users#show&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;paulmillr&#39;</span><span class="p">]);</span>
+</code></pre></div>
+<p>to yield <code>&#39;/users/paulmillr/profile&#39;</code>.</p>
+
+  </div>
+  </div>
+</body>
+</html>

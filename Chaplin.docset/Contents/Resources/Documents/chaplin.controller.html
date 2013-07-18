@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.Controller &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.Controller
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/controllers/controller.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p>Controllers are in charge of handling the lifecycle of specific models and their associated views. That is, they are responsible for both instantiating and connecting models/collections and their views, as well as disposing of them, before handing control over to another controller. There can be only one <em>current</em> controller, which provides the main view and represents the current URL. In addition, there can be several persistent controllers for overarching tasks, like for example a <code>SessionController</code>.</p>
+
+<h2 id="methods">Methods</h2>
+
+<h3 class="module-member" id="adjustTitle">adjustTitle(subtitle)</h3>
+
+<p>Adjusts document title to <code>subtitle - title</code>. A title template can be set when initializing the <code>Dispatcher</code>.</p>
+
+<h3 class="module-member" id="redirectTo">redirectTo(url, options)</h3>
+
+<p>Navigates to <code>url</code> in app.</p>
+
+<h3 class="module-member" id="redirectToRoute">redirectToRoute(name, params, options)</h3>
+
+<p>Navigates to named route, like <span class="coffeescript"><code>@redirectToRoute &#39;likes#show&#39;, id: 502</code></span><span class="javascript"><code>this.redirectToRoute(&#39;likes#show&#39;, {id: 502})</code></span>.</p>
+
+<h3 class="module-member" id="dispose">dispose()</h3>
+
+<p>Disposes all models and views on current <code>Controller</code> instance.</p>
+
+<h2 id="toc_0">Usage</h2>
+
+<h3 id="toc_1">Structure</h3>
+
+<p>By convention, there is one controller for each application module. A controller may provide methods for several actions like <code>index</code>, <code>show</code>, <code>edit</code>, etc. These action methods are called by the <a href="chaplin.dispatcher.html">Chaplin.Dispatcher</a> when an associated route matches.</p>
+
+<p>A controller is usually started following a route match. Each route entry points to one controller action, for example <code>likes#show</code>, which is the <code>show</code> action of the <code>LikesController</code>.</p>
+
+<h3 id="toc_2">Naming convention</h3>
+
+<p>By default, all controllers must be placed in the <code>/controllers/</code>  folder (the / stands for the root of the <code>baseURL</code> you have defined for your loader) and be suffixed with <code>_controller</code>. So for instance, the <code>LikesController</code> needs to be defined in the file <code>/controllers/likes_controller.js</code>.</p>
+
+<p>If you want to overwrite this behaviour, you can edit the <code>controller_path</code> and <code>controller_suffix</code> options in the options hash you pass to <code>Chaplin.Application.initDispatcher</code> or <code>Chaplin.Dispatcher.initialize</code>. See details in the <code>Chaplin.Dispatcher</code> <a href="chaplin.dispatcher.html#initialize">documentation</a>.</p>
+
+<h3 id="toc_3">Before actions</h3>
+
+<p>To execute code before the controller action is called, you can define a handler as the <code>beforeAction</code> property (e.g. to add access control checks).</p>
+
+<h3 id="toc_4">Example</h3>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;controllers/controller&#39;</span><span class="p">,</span>
+  <span class="s">&#39;models/likes&#39;</span><span class="p">,</span>          <span class="c1"># the collection</span>
+  <span class="s">&#39;models/like&#39;</span><span class="p">,</span>           <span class="c1"># the model</span>
+  <span class="s">&#39;views/likes-view&#39;</span><span class="p">,</span>      <span class="c1"># the collection view</span>
+  <span class="s">&#39;views/full-like-view&#39;</span>   <span class="c1"># the view</span>
+<span class="p">],</span> <span class="nf">(Controller, Likes, Like, LikesView, FullLikeView) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="k">class</span> <span class="nx">LikesController</span> <span class="k">extends</span> <span class="nx">Controller</span>
+    <span class="nv">beforeAction: </span><span class="nf">(params, route) -&gt;</span>
+      <span class="k">if</span> <span class="nx">route</span><span class="p">.</span><span class="nx">action</span> <span class="o">is</span> <span class="s">&#39;show&#39;</span>
+        <span class="nx">@redirectUnlessLoggedIn</span><span class="p">()</span>
+
+    <span class="c1"># Initialize method is empty here.</span>
+    <span class="nv">index: </span><span class="nf">(params) -&gt;</span>
+      <span class="vi">@collection = </span><span class="k">new</span> <span class="nx">Likes</span><span class="p">()</span>
+      <span class="vi">@view = </span><span class="k">new</span> <span class="nx">LikesView</span> <span class="p">{</span><span class="nx">@collection</span><span class="p">}</span>
+
+    <span class="nv">show: </span><span class="nf">(params) -&gt;</span>
+      <span class="vi">@model = </span><span class="k">new</span> <span class="nx">Like</span> <span class="nv">id: </span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span>
+      <span class="vi">@view = </span><span class="k">new</span> <span class="nx">FullLikeView</span> <span class="p">{</span><span class="nx">@model</span><span class="p">}</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">define</span><span class="p">([</span>
+  <span class="s1">&#39;controllers/controller&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;models/likes&#39;</span><span class="p">,</span>          <span class="c1">// the collection</span>
+  <span class="s1">&#39;models/like&#39;</span><span class="p">,</span>           <span class="c1">// the model</span>
+  <span class="s1">&#39;views/likes-view&#39;</span><span class="p">,</span>      <span class="c1">// the collection view</span>
+  <span class="s1">&#39;views/full-like-view&#39;</span>   <span class="c1">// the view</span>
+<span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">Controller</span><span class="p">,</span> <span class="nx">Likes</span><span class="p">,</span> <span class="nx">Like</span><span class="p">,</span> <span class="nx">LikesView</span><span class="p">,</span> <span class="nx">FullLikeView</span><span class="p">)</span> <span class="p">{</span>
+  <span class="s1">&#39;use strict&#39;</span>
+
+  <span class="kd">var</span> <span class="nx">LikesController</span> <span class="o">=</span> <span class="nx">Controller</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+    <span class="nx">beforeAction</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">redirectUnlessLoggedIn</span><span class="p">();</span>
+    <span class="p">},</span>
+
+    <span class="c1">// Initialize method is empty here.</span>
+    <span class="nx">index</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Likes</span><span class="p">();</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">LikesView</span><span class="p">({</span><span class="nx">collection</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">});</span>
+    <span class="p">},</span>
+
+    <span class="nx">show</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Like</span><span class="p">({</span><span class="nx">id</span><span class="o">:</span> <span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">});</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FullLikeView</span><span class="p">({</span><span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">});</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+  <span class="k">return</span> <span class="nx">LikesController</span><span class="p">;</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 id="toc_5">Creating models and views</h3>
+
+<p>A controller action should create a main view and save it as an instance property named <code>view</code>: <code>this.view = new SomeView(…)</code>.</p>
+
+<p>Normal models and collections should also be saved as instance properties so Chaplin can reach them.</p>
+
+<h3 id="toc_6">Controller disposal and object persistence</h3>
+
+<p>By default a new controller is instantiated with every route match. That means models and views are disposed by default, even if the new controller is the same as the old controller.</p>
+
+<p>To persist models and views in a controlled way, it is recommended to use the <a href="chaplin.composer.html">Chaplin.Composer</a>.</p>
+
+<p>Chaplin will automatically dispose all models and views that are properties of the controller instance. If you’re using the Composer to reuse models and views, you need to use local variables instead of controller properties. Otherwise Chaplin will dispose them with the controller.</p>
+
+<h3 id="toc_7">Including Controllers in the production build</h3>
+
+<p>In your production environment, you may want to package your files together using a build tool like <a href="http://requirejs.org/docs/optimization.html">r.js</a>.</p>
+
+<p>Controllers are dynamically loaded from the <code>Chaplin.Dispatcher</code> using the <code>require()</code> method. Build tools like r.js can’t know about files that are lazy-loaded using <code>require()</code>. They only consider the static dependencies specified by <code>define()</code>.</p>
+
+<p>This means that build tools will ignore your controllers and won’t include them in your package. You need to include them manually, for instance with r.js:</p>
+<div class="highlight"><pre><code class="yaml language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">paths</span><span class="p-Indicator">:</span>
+  <span class="c1"># ...</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="s">&#39;application&#39;</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="s">&#39;controllers/one_controller&#39;</span>       <span class="c1"># included manually into the build</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="s">&#39;controllers/another_controller&#39;</span>   <span class="c1"># same</span>
+</code></pre></div>
+  </div>
+  </div>
+</body>
+</html>

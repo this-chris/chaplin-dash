@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.Layout &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+  
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.Layout
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/views/layout.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p><code>Chaplin.Layout</code> is the top-level application “view”. It doesn&#39;t inherit from <code>Chaplin.View</code> but borrows some of its functionalities. It is tied to the <code>document</code> DOM element and handles app-wide events, such as clicks on application-internal links. Most importantly, when a new controller is activated, <code>Chaplin.Layout</code> is responsible for changing the main view to the view of the new controller.</p>
+
+<h2 id="methods">Methods</h2>
+
+<h3 class="module-member" id="initialize">initialize([options={}])</h3>
+
+<ul>
+<li><strong>options</strong>:
+
+<ul>
+<li><strong>routeLinks</strong> (default <code>&#39;a, .go-to&#39;</code>): the selector of elements you want to apply internal routing to. Set to false to deactivate internal routing. If <code>false</code>y, chaplin won’t route links at all.</li>
+<li><strong>skipRouting</strong> (default <code>&#39;.noscript&#39;</code>): if you want to skip the internal routing in some situation. Can take the following value:
+
+<ul>
+<li>selector: check if the activated link matches the selector. The default value is a selector and will prevent routing for any links with class <code>noscript</code>.</li>
+<li>function: check the return value. Return <code>true</code> to continue routing, return <code>false</code> to stop routing. The path and the elements are passed as parameters. Example: <code>function(href, el) { return href == &#39;bla&#39;; }</code></li>
+<li>false: never skip routing</li>
+</ul></li>
+<li><strong>openExternalToBlank</strong> (default <code>false</code>): whether or not links to external domains should open in a new window/tab.</li>
+<li><strong>scrollTo</strong> (default <code>[0, 0]</code>): the coordinates (x, y) you want to scroll to on view replacement. Set to <em>false</em> to deactivate it.</li>
+<li><strong>titleTemplate</strong> (default <code>_.template(&quot;&lt;%= subtitle %&gt; - &lt;%= title %&gt;&quot;)</code>): a function which returns the document title. Per default, it receives an object with the properties <code>title</code> and <code>subtitle</code>.</li>
+</ul></li>
+</ul>
+
+<h3 class="module-member" id="delegateEvents">delegateEvents([events])</h3>
+
+<p>A wrapper for <code>Backbone.View.delegateEvents</code>. See Backbone <a href="http://backbonejs.org/#View-delegateEvents">documentation</a> for more details.</p>
+
+<h3 class="module-member" id="undelegateEvents">undelegateEvents()</h3>
+
+<p>A wrapper for <code>Backbone.View.undelegateEvents</code>. See Backbone <a href="http://backbonejs.org/#View-undelegateEvents">documentation</a> for more details.</p>
+
+<h3 class="module-member" id="hideOldView">hideOldView(controller)</h3>
+
+<p>Hide the active (old) view on the <code>beforeControllerDispose</code> event sent by the dispatcher on route change and scroll to the coordinates specified by the initialize <code>scrollTo</code> option.</p>
+
+<h3 class="module-member" id="showNewView">showNewView(context)</h3>
+
+<p>Show the new view on the <code>dispatcher:dispatch</code> event sent by the dispatcher on route change.</p>
+
+<h3 class="module-member" id="adjustTitle">adjustTitle(context)</h3>
+
+<p>Adjust the title of the page based on the <code>titleTemplate</code> option. The <code>title</code> variable is the one defined at application level, the <code>subtitle</code> the one defined at controller level.</p>
+
+<h3 class="module-member" id="openLink">openLink(event)</h3>
+
+<p>Open the <code>href</code> or <code>data-href</code> URL of a DOM element. When <code>openLink</code> is called it checks if the <code>href</code> is valid and runs the <code>skipRouting</code> function if set by the user. If the <code>href</code> is valid, it checks if it is an external link and depending on the <code>openExternalToBlank</code> option, opens it in a new window. Finally, if it is an internal link, it starts routing the URL.</p>
+
+<h2 id="toc_0">Usage</h2>
+
+<h3 id="toc_1">App-wide events</h3>
+
+<p>To register app-wide events, you can define them in the <code>events</code> hash. It works like <code>Backbone.View.delegateEvent</code> on the <code>document</code> DOM element.</p>
+
+<h3 id="toc_2">Route links internally</h3>
+
+<p>If you want to route links internally, you can use the <code>events</code> hash with the <code>openLink</code> function like so:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nv">events:</span>
+  <span class="s">&#39;click a&#39;</span><span class="o">:</span> <span class="s">&#39;openLink&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
+  <span class="s1">&#39;click a&#39;</span><span class="o">:</span> <span class="s1">&#39;openLink&#39;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>To open all external links (different hostname) in a new window, you can set <code>openExternalLinksInNewWindow</code> to true when initializing <code>Chaplin.Layout</code> in your <code>Application</code>:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="k">class</span> <span class="nx">MyApplication</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span>
+  <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+    <span class="c1"># ...</span>
+    <span class="nx">@initLayout</span> <span class="nv">openExternalLinksInNewWindow: </span><span class="kc">true</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">MyApplication</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">initLayout</span><span class="p">({</span><span class="nx">openExternalLinksInNewWindow</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>To add a custom check whether or not a link should be open internally, you can override the <code>isExternalLink</code> method:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="k">class</span> <span class="nx">Layout</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Layout</span>
+  <span class="nv">isExternalLink: </span><span class="nf">(href) -&gt;</span> <span class="c1"># some test on the href variable</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">Layout</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Layout</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">isExternalLink</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">href</span><span class="p">)</span> <span class="p">{}</span> <span class="c1">// some test on the href variable</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 id="toc_3">View loading</h3>
+
+<p>There is nothing to do, the Layout is listening to the <code>beforeControllerDispose</code> and <code>dispatcher:dispatch</code> and will trigger the function when a new route is called. If you are not happy with the site scrolling to the top of the page on each view load, you can set the <code>scrollTo</code> option when initializing <code>Chaplin.Layout</code> in your <code>Application</code>:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="k">class</span> <span class="nx">MyApplication</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span>
+
+  <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+    <span class="c1"># ...</span>
+    <span class="nx">@initLayout</span>
+      <span class="nv">scrollTo: </span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span> <span class="c1"># will scroll to x=10px and y=30px.</span>
+      <span class="c1"># OR</span>
+      <span class="nv">scrollTo: </span><span class="kc">false</span>    <span class="c1"># deactivate the scroll</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">MyApplication</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">initLayout</span><span class="p">({</span>
+      <span class="nx">scrollTo</span><span class="o">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span> <span class="c1">// will scroll to x=10px and y=30px.</span>
+      <span class="c1">// OR</span>
+      <span class="nx">scrollTo</span><span class="o">:</span> <span class="kc">false</span>    <span class="c1">// deactivate the scroll</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+  </div>
+  </div>
+</body>
+</html>

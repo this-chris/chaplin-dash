@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.Model &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+  
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.Model
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/models/model.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p><code>Chaplin.Model</code> is an extension of <code>Backbone.Model</code>. Major additions are disposal for improved memory management and the inclusion of the pub/sub pattern via the <code>Chaplin.EventBroker</code> mixin.</p>
+
+<h2 id="methods">Methods</h2>
+
+<p>All <code>Backbone.Model</code> <a href="http://backbonejs.org/#Model">methods</a>.</p>
+
+<h3 class="module-member" id="getAttributes">getAttributes()</h3>
+
+<p>An accessor for the model’s <code>attributes</code> property. The accessor can be overwritten by decorators to optionally perform any kind of processing of the data.</p>
+
+<p><strong>Note:</strong> Pay attention to the fact that this returns the actual <code>attributes</code> object, not a serialization.</p>
+
+<h3 class="module-member" id="serialize">serialize()</h3>
+
+<p>Memory-saving serializing of model attributes. Maps models to their attributes recursively. Creates an object which delegates to the original attributes when a property needs to be overwritten.</p>
+
+<h3 class="module-member" id="dispose">dispose()</h3>
+
+<p>Sends a <code>&#39;dispose&#39;</code> event to all associated collections and views to announce that the model is being disposed. Unsubscribes all global and local event handlers and also removes all the event handlers that were subscribed to this model’s events. Removes the collection reference, internal attribute hashes and event handlers. On compliant runtimes the model is frozen to prevent any further changes to it, see <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/freeze">Object.freeze</a>.</p>
+
+<h2 id="toc_0">Usage</h2>
+
+<p>To take advantage of the built in memory management, use <code>subscribeEvent</code> instead of registering model methods directly as handlers for global events. This ensures that the handler is added in a way that allows for automatic removal on model/collection disposal. It’s crucial to remove all references to model/collection methods to allow them to be garbage collected.</p>
+
+<p>The <code>SyncMachine</code> mixin for models simplifies the handling of asynchronous data fetching. Its functionality can be included with a simple <code>_.extend</code>: <span class="coffeescript"><code>_.extend @prototype, Chaplin.SyncMachine</code></span> <span class="javascript"><code>_.extend(this.prototype, Chaplin.SyncMachine);</code></span>. To learn more about <code>SyncMachine</code>, see the <a href="chaplin.sync_machine.html">SyncMachine docs</a>.</p>
+
+  </div>
+  </div>
+</body>
+</html>

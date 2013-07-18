@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Handling Asynchronous Dependencies &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+  
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Handling Asynchronous Dependencies
+      
+    </h1>
+    
+    </header>
+    <p>Most processes in a client-side JavaScript application run asynchronously. It’s quite common for an application to communicate with multiple different external APIs. API bridges are established on demand and of course all API calls are asynchronous. Lazy-loading code and content is a key to performance. Therefore, handling asynchronous dependencies is a big challenge for JavaScript web applications. We’re using the following techniques to handle dependencies, from bottom-level to top-level.</p>
+
+<h2 id="toc_0">Backbone Events</h2>
+
+<p>Model-view-binding, Backbone’s key feature, is still a building block in Chaplin: A view can listen to model changes by subscribing to a <code>change</code> event or other custom model events. In addition, collections and collection views can listen for events which occur on their items. This works because model events bubble up to the associated collection.</p>
+
+<h2 id="toc_1">State Machines for Synchronization: Deferreds and SyncMachine</h2>
+
+<p>Models, collections and third-party scripts typically have a loaded state. But they’re often not ready for use initially because they rely upon asynchronous input such as waiting for data to be fetched from the server or a successful user login.</p>
+
+<p>For this purpose, <a href="http://api.jquery.com/category/deferred-object/">jQuery Deferreds</a> (or <a href="https://github.com/Mumakil/Standalone-Deferred">standalone-deferreds</a> if you’re using Zepto) could be utilized. They allow registering of load handlers using the <a href="http://api.jquery.com/deferred.done/">done</a> method. The handlers will be called once the Deferred is resolved.</p>
+
+<p>Deferreds are a versatile pattern which can be used on different levels in an application, but in terms of the amount of states they can handle, they are rather simple because they only have three states (pending, resolved, rejected) and two one-way transitions (resolve, reject). For more complex synchronization tasks, Chaplin offers the <code>SyncMachine</code> which is a more complex and long-lived state machine.</p>
+
+<h2 id="toc_2">Wrapping Methods to Wait for a Deferred</h2>
+
+<p>On moviepilot.com, for example, methods of several Deferreds are called everywhere throughout the application. It wouldn’t be feasible for every caller to check the resolved state and register a callback if necessary. Instead, these methods are wrapped so they can be called safely before the Deferred is resolved. In this case, the calls are automatically saved as <code>done</code> callbacks, once the Deferred is resolved, they are passed through immediately. Of course this wrapping is only possible for asynchronous methods which don’t have a return value but expect a callback function.</p>
+
+<p>The helper method <code>utils.deferMethods</code> in <a href="https://github.com/chaplinjs/facebook-example/blob/master/coffee/lib/utils.coffee">the Facebook example repository</a> wraps methods so calls are postponed until a given Deferred object is resolved. The method is quite flexible and we’re using it in several situations.</p>
+
+<h2 id="toc_3">Publish/Subscribe</h2>
+
+<p>The publish/subscribe pattern is the most important glue in Chaplin applications because it’s used for most of the cross-module interaction. It’s a powerful pattern to promote loose coupling of application modules. Chaplin’s implementation using <code>Backbone.Events</code> is simple but highly beneficial.</p>
+
+  </div>
+  </div>
+</body>
+</html>
