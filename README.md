@@ -1,4 +1,4 @@
-aplin-dash
+chaplin-dash
 ======
 [Chaplin](http://chaplinjs.org) docset for Dash (http://kapeli.com/dash/).
 
