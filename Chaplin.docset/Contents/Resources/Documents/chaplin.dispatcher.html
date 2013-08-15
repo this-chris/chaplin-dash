@@ -5,9 +5,7 @@
   <title>
      Chaplin.Dispatcher &middot;  Chaplin Documentation
   </title>
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/application.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" type="text/css" href="pygments.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -18,19 +16,36 @@
   <![endif]-->
 </head>
 <body class="container-fluid">
+  <div class="wrapper">
 
-  <div id="content" class="span9">
-    <header class="module-info">
-    
-    <h1>
-      Chaplin.Dispatcher
-      
-        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/dispatcher.coffee">&rarr; Source</a>
-      
-    </h1>
-    
+  <section id="content" class="span9">
+
+    <header class="nav-header">
+      <div class="list-wrapper">
+        <ul class="page-nav">
+          <li class="logo"><img width="30" src="http://chaplinjs.org/images/chaplin-hat.png" alt=""></li>
+          <li class="logo-text">Chaplin</li>
+          <li><a href="http://chaplinjs.org" data-pattern="\/\/chaplinjs\.org/(#.*)?$">About</a></li>
+          <li><a class="active" href="index.html" data-pattern="docs\.chaplinjs">Documentation</a></li>
+          <li><a href="http://chaplinjs.org/examples.html" data-pattern="examples\.html$">Examples</a></li>
+          <li><a href="http://chaplinjs.org/support.html" data-pattern="support\.html$">Support</a></li>
+        </ul>
+      </div>
     </header>
-    <p>The <code>Dispatcher</code> sits between the router and the various controllers of your application. It listens for a routing event to occur and then:</p>
+
+
+    <main class="actual-content">
+      <header class="module-info">
+      
+      <h1>
+        Chaplin.Dispatcher
+        
+          <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/dispatcher.coffee">&rarr; Source</a>
+        
+      </h1>
+      
+      </header>
+      <p>The <code>Dispatcher</code> sits between the router and the various controllers of your application. It listens for a routing event to occur and then:</p>
 
 <ul>
 <li>disposes the previously active controller,</li>
@@ -53,7 +68,8 @@ Both of these options serve to generate path names for autoloading controller mo
 </ul></li>
 </ul>
 
-  </div>
+    </main>
+  </section>
   </div>
 </body>
 </html>

@@ -5,9 +5,7 @@
   <title>
      Event Handling &middot;  Chaplin Documentation
   </title>
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/application.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" type="text/css" href="pygments.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -18,17 +16,33 @@
   <![endif]-->
 </head>
 <body class="container-fluid">
+  <div class="wrapper">
+  <section id="content" class="span9">
 
-  <div id="content" class="span9">
-    <header class="module-info">
-    
-    <h1>
-      Event Handling
-      
-    </h1>
-    
+    <header class="nav-header">
+      <div class="list-wrapper">
+        <ul class="page-nav">
+          <li class="logo"><img width="30" src="http://chaplinjs.org/images/chaplin-hat.png" alt=""></li>
+          <li class="logo-text">Chaplin</li>
+          <li><a href="http://chaplinjs.org" data-pattern="\/\/chaplinjs\.org/(#.*)?$">About</a></li>
+          <li><a class="active" href="index.html" data-pattern="docs\.chaplinjs">Documentation</a></li>
+          <li><a href="http://chaplinjs.org/examples.html" data-pattern="examples\.html$">Examples</a></li>
+          <li><a href="http://chaplinjs.org/support.html" data-pattern="support\.html$">Support</a></li>
+        </ul>
+      </div>
     </header>
-    <p>For models and views, there are several wrapper methods for event handler registration. In contrast to the direct methods, they help prevent memory leakage, because the handlers will be removed correctly once the model or view is disposed. The methods will also be bound to the caller for ease of registration.</p>
+
+
+    <main class="actual-content">
+      <header class="module-info">
+      
+      <h1>
+        Event Handling
+        
+      </h1>
+      
+      </header>
+      <p>For models and views, there are several wrapper methods for event handler registration. In contrast to the direct methods, they help prevent memory leakage, because the handlers will be removed correctly once the model or view is disposed. The methods will also be bound to the caller for ease of registration.</p>
 
 <h2 id="toc_0">Mediator</h2>
 
@@ -86,7 +100,8 @@
 
 <p><img src="http://s3.amazonaws.com/imgly_production/3362020/original.jpg" alt="Dance"></p>
 
-  </div>
+    </main>
+  </section>
   </div>
 </body>
 </html>

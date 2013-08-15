@@ -5,9 +5,7 @@
   <title>
      Chaplin.Application &middot;  Chaplin Documentation
   </title>
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/application.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" type="text/css" href="pygments.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -18,18 +16,35 @@
   <![endif]-->
 </head>
 <body class="container-fluid">
-  <div id="content" class="span9">
-    <header class="module-info">
-    
-    <h1>
-      Chaplin.Application
-      
-        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/application.coffee">&rarr; Source</a>
-      
-    </h1>
-    
+  <div class="wrapper">
+  <section id="content" class="span9">
+
+    <header class="nav-header">
+      <div class="list-wrapper">
+        <ul class="page-nav">
+          <li class="logo"><img width="30" src="http://chaplinjs.org/images/chaplin-hat.png" alt=""></li>
+          <li class="logo-text">Chaplin</li>
+          <li><a href="http://chaplinjs.org" data-pattern="\/\/chaplinjs\.org/(#.*)?$">About</a></li>
+          <li><a class="active" href="index.html" data-pattern="docs\.chaplinjs">Documentation</a></li>
+          <li><a href="http://chaplinjs.org/examples.html" data-pattern="examples\.html$">Examples</a></li>
+          <li><a href="http://chaplinjs.org/support.html" data-pattern="support\.html$">Support</a></li>
+        </ul>
+      </div>
     </header>
-    <p>The <strong>Chaplin.Application</strong> object is a bootstrapper and a point of extension
+
+
+    <main class="actual-content">
+      <header class="module-info">
+      
+      <h1>
+        Chaplin.Application
+        
+          <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/application.coffee">&rarr; Source</a>
+        
+      </h1>
+      
+      </header>
+      <p>The <strong>Chaplin.Application</strong> object is a bootstrapper and a point of extension
 for the core modules of <strong>Chaplin</strong>: the <strong><a href="chaplin.application.html#initDispatcher">Dispatcher</a></strong>, the
 <strong><a href="chaplin.application.html#initLayout">Layout</a></strong>, the <strong><a href="chaplin.application.html#initRouter">Router</a></strong>, and the
 <strong><a href="chaplin.application.html#initComposer">Composer</a></strong>. The object can be extended by your application.</p>
@@ -194,7 +209,8 @@ The routing function that contains the match invocations, normally located in <c
   <span class="p">}</span>
 <span class="p">});</span>
 </code></pre></div>
-  </div>
+    </main>
+  </section>
   </div>
 </body>
 </html>

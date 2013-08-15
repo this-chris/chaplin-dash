@@ -5,9 +5,7 @@
   <title>
      Chaplin.mediator &middot;  Chaplin Documentation
   </title>
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/application.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" type="text/css" href="pygments.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -18,19 +16,35 @@
   <![endif]-->
 </head>
 <body class="container-fluid">
-  
-  <div id="content" class="span9">
-    <header class="module-info">
-    
-    <h1>
-      Chaplin.mediator
-      
-        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/mediator.coffee">&rarr; Source</a>
-      
-    </h1>
-    
+  <div class="wrapper">
+  <section id="content" class="span9">
+
+    <header class="nav-header">
+      <div class="list-wrapper">
+        <ul class="page-nav">
+          <li class="logo"><img width="30" src="http://chaplinjs.org/images/chaplin-hat.png" alt=""></li>
+          <li class="logo-text">Chaplin</li>
+          <li><a href="http://chaplinjs.org" data-pattern="\/\/chaplinjs\.org/(#.*)?$">About</a></li>
+          <li><a class="active" href="index.html" data-pattern="docs\.chaplinjs">Documentation</a></li>
+          <li><a href="http://chaplinjs.org/examples.html" data-pattern="examples\.html$">Examples</a></li>
+          <li><a href="http://chaplinjs.org/support.html" data-pattern="support\.html$">Support</a></li>
+        </ul>
+      </div>
     </header>
-    <p>It is one of the basic goals of Chaplin to enforce module encapsulation and independence and to direct communication through controlled channels. Chaplin’s <code>mediator</code> object is the enabler of this controlled communication. It implements the <a href="http://en.wikipedia.org/wiki/Publish/subscribe">Publish/Subscribe</a> (pub/sub) pattern to ensure loose coupling of application modules, while still allowing for ease of information exchange. Instead of making direct use of other parts of the application, modules communicate by events, similar to how changes in the DOM are communicated to client-side code. Modules can listen for and react to events, but also publish events of their own to give other modules the chance to react. There are only three basic methods for this application-wide communication: <code>subscribe</code>, <code>unsubscribe</code> and <code>publish</code>.</p>
+
+
+    <main class="actual-content">
+      <header class="module-info">
+      
+      <h1>
+        Chaplin.mediator
+        
+          <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/mediator.coffee">&rarr; Source</a>
+        
+      </h1>
+      
+      </header>
+      <p>It is one of the basic goals of Chaplin to enforce module encapsulation and independence and to direct communication through controlled channels. Chaplin’s <code>mediator</code> object is the enabler of this controlled communication. It implements the <a href="http://en.wikipedia.org/wiki/Publish/subscribe">Publish/Subscribe</a> (pub/sub) pattern to ensure loose coupling of application modules, while still allowing for ease of information exchange. Instead of making direct use of other parts of the application, modules communicate by events, similar to how changes in the DOM are communicated to client-side code. Modules can listen for and react to events, but also publish events of their own to give other modules the chance to react. There are only three basic methods for this application-wide communication: <code>subscribe</code>, <code>unsubscribe</code> and <code>publish</code>.</p>
 
 <p><strong>Note:</strong> If you want to give local pub/sub functionality to a class, take a look at the <a href="chaplin.event_broker.html">EventBroker</a>.</p>
 
@@ -66,7 +80,8 @@
 <div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">Chaplin</span><span class="p">.</span><span class="nx">mediator</span><span class="p">.</span><span class="nx">unsubscribe</span> <span class="s">&#39;login&#39;</span><span class="p">,</span> <span class="nx">@doSomething</span>
 </code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">Chaplin</span><span class="p">.</span><span class="nx">mediator</span><span class="p">.</span><span class="nx">unsubscribe</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">doSomething</span><span class="p">);</span>
 </code></pre></div>
-  </div>
+    </main>
+  </section>
   </div>
 </body>
 </html>

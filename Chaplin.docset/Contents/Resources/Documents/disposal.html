@@ -5,9 +5,7 @@
   <title>
      Memory Management and Object Disposal &middot;  Chaplin Documentation
   </title>
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/application.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" type="text/css" href="pygments.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -18,17 +16,34 @@
   <![endif]-->
 </head>
 <body class="container-fluid">
- 
-  <div id="content" class="span9">
-    <header class="module-info">
-    
-    <h1>
-      Memory Management and Object Disposal
-      
-    </h1>
-    
+  <div class="wrapper">
+
+  <section id="content" class="span9">
+
+    <header class="nav-header">
+      <div class="list-wrapper">
+        <ul class="page-nav">
+          <li class="logo"><img width="30" src="http://chaplinjs.org/images/chaplin-hat.png" alt=""></li>
+          <li class="logo-text">Chaplin</li>
+          <li><a href="http://chaplinjs.org" data-pattern="\/\/chaplinjs\.org/(#.*)?$">About</a></li>
+          <li><a class="active" href="index.html" data-pattern="docs\.chaplinjs">Documentation</a></li>
+          <li><a href="http://chaplinjs.org/examples.html" data-pattern="examples\.html$">Examples</a></li>
+          <li><a href="http://chaplinjs.org/support.html" data-pattern="support\.html$">Support</a></li>
+        </ul>
+      </div>
     </header>
-    <p>A core concern of the Chaplin architecture is proper memory management. While there isn’t a broad discussion about garbage collection in JavaScript applications, it is an important topic. Since Backbone provides little out of the box to help manage memory, Chaplin extends Backbone’s <code>Model</code>, <code>Collection</code> and <code>View</code> classes to implement a powerful disposal process which ensures that each controller, model, collection and view cleans up after itself.</p>
+
+
+    <main class="actual-content">
+      <header class="module-info">
+      
+      <h1>
+        Memory Management and Object Disposal
+        
+      </h1>
+      
+      </header>
+      <p>A core concern of the Chaplin architecture is proper memory management. While there isn’t a broad discussion about garbage collection in JavaScript applications, it is an important topic. Since Backbone provides little out of the box to help manage memory, Chaplin extends Backbone’s <code>Model</code>, <code>Collection</code> and <code>View</code> classes to implement a powerful disposal process which ensures that each controller, model, collection and view cleans up after itself.</p>
 
 <p>Event handling creates references between objects. If a view listens for model changes, then that model has a reference to a view method in its internal <code>_callbacks</code> list. View methods are often bound to the view instance using <code>Function.prototype.bind</code>, <code>_.bind()</code>, CoffeeScript’s fat arrow <code>=&gt;</code> or alike. When a <code>change</code> handler is bound to the view, the view will remain in memory even if it was already detached from the DOM. The garbage collector can’t free its memory because of this reference.</p>
 
@@ -43,7 +58,8 @@
 
 <p>This disposal process is quite complex and many objects needs a custom <code>dispose</code> method. But this is just the least Chaplin can do.</p>
 
-  </div>
+    </main>
+  </section>
   </div>
 </body>
 </html>

@@ -5,9 +5,7 @@
   <title>
      Chaplin.utils &middot;  Chaplin Documentation
   </title>
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/application.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" type="text/css" href="pygments.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -18,19 +16,35 @@
   <![endif]-->
 </head>
 <body class="container-fluid">
- 
-  <div id="content" class="span9">
-    <header class="module-info">
-    
-    <h1>
-      Chaplin.utils
-      
-        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/lib/utils.coffee">&rarr; Source</a>
-      
-    </h1>
-    
+  <div class="wrapper">
+  <section id="content" class="span9">
+
+    <header class="nav-header">
+      <div class="list-wrapper">
+        <ul class="page-nav">
+          <li class="logo"><img width="30" src="http://chaplinjs.org/images/chaplin-hat.png" alt=""></li>
+          <li class="logo-text">Chaplin</li>
+          <li><a href="http://chaplinjs.org" data-pattern="\/\/chaplinjs\.org/(#.*)?$">About</a></li>
+          <li><a class="active" href="index.html" data-pattern="docs\.chaplinjs">Documentation</a></li>
+          <li><a href="http://chaplinjs.org/examples.html" data-pattern="examples\.html$">Examples</a></li>
+          <li><a href="http://chaplinjs.org/support.html" data-pattern="support\.html$">Support</a></li>
+        </ul>
+      </div>
     </header>
-    <p>Chaplin’s utils provide common functions for use throughout the project.</p>
+
+
+    <main class="actual-content">
+      <header class="module-info">
+      
+      <h1>
+        Chaplin.utils
+        
+          <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/lib/utils.coffee">&rarr; Source</a>
+        
+      </h1>
+      
+      </header>
+      <p>Chaplin’s utils provide common functions for use throughout the project.</p>
 
 <p>These functions are generic and not related to any specific Chaplin components. Useful functions for messing with Chaplin are available in <a href="chaplin.helpers.html">Chaplin.helpers</a>.</p>
 
@@ -104,7 +118,8 @@
 
 <p>Looks at an event object <code>event</code> to determine if the <strong>shift</strong>, <strong>alt</strong>, <strong>ctrl</strong>, or <strong>meta</strong> keys were pressed. Useful in link click handling (i.e. if you need ctrl-click or shift-click to open the link in a new window).</p>
 
-  </div>
+    </main>
+  </section>
   </div>
 </body>
 </html>

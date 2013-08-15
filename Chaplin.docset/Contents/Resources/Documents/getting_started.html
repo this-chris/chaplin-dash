@@ -5,9 +5,7 @@
   <title>
      Getting started &middot;  Chaplin Documentation
   </title>
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/application.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" type="text/css" href="pygments.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -18,17 +16,33 @@
   <![endif]-->
 </head>
 <body class="container-fluid">
+  <div class="wrapper">
+  <section id="content" class="span9">
 
-  <div id="content" class="span9">
-    <header class="module-info">
-    
-    <h1>
-      Getting started
-      
-    </h1>
-    
+    <header class="nav-header">
+      <div class="list-wrapper">
+        <ul class="page-nav">
+          <li class="logo"><img width="30" src="http://chaplinjs.org/images/chaplin-hat.png" alt=""></li>
+          <li class="logo-text">Chaplin</li>
+          <li><a href="http://chaplinjs.org" data-pattern="\/\/chaplinjs\.org/(#.*)?$">About</a></li>
+          <li><a class="active" href="index.html" data-pattern="docs\.chaplinjs">Documentation</a></li>
+          <li><a href="http://chaplinjs.org/examples.html" data-pattern="examples\.html$">Examples</a></li>
+          <li><a href="http://chaplinjs.org/support.html" data-pattern="support\.html$">Support</a></li>
+        </ul>
+      </div>
     </header>
-    <h2 id="toc_0">Download the boilerplate</h2>
+
+
+    <main class="actual-content">
+      <header class="module-info">
+      
+      <h1>
+        Getting started
+        
+      </h1>
+      
+      </header>
+      <h2 id="toc_0">Download the boilerplate</h2>
 
 <p>The easiest way to start a Chaplin application is to download the boilerplate. It contains a recent build of Chaplin as well as all JavaScript libraries Chaplin depends upon:</p>
 
@@ -57,7 +71,8 @@
 
 <p>Use <code>requirejs-rails</code> gem.</p>
 
-  </div>
+    </main>
+  </section>
   </div>
 </body>
 </html>

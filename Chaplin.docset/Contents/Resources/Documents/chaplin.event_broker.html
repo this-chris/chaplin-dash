@@ -5,9 +5,7 @@
   <title>
      Chaplin.EventBroker &middot;  Chaplin Documentation
   </title>
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/application.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" type="text/css" href="pygments.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -18,19 +16,35 @@
   <![endif]-->
 </head>
 <body class="container-fluid">
- 
-  <div id="content" class="span9">
-    <header class="module-info">
-    
-    <h1>
-      Chaplin.EventBroker
-      
-        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/lib/event_broker.coffee">&rarr; Source</a>
-      
-    </h1>
-    
+  <div class="wrapper">
+  <section id="content" class="span9">
+
+    <header class="nav-header">
+      <div class="list-wrapper">
+        <ul class="page-nav">
+          <li class="logo"><img width="30" src="http://chaplinjs.org/images/chaplin-hat.png" alt=""></li>
+          <li class="logo-text">Chaplin</li>
+          <li><a href="http://chaplinjs.org" data-pattern="\/\/chaplinjs\.org/(#.*)?$">About</a></li>
+          <li><a class="active" href="index.html" data-pattern="docs\.chaplinjs">Documentation</a></li>
+          <li><a href="http://chaplinjs.org/examples.html" data-pattern="examples\.html$">Examples</a></li>
+          <li><a href="http://chaplinjs.org/support.html" data-pattern="support\.html$">Support</a></li>
+        </ul>
+      </div>
     </header>
-    <p>The <code>EventBroker</code> offers an interface to interact with <a href="chaplin.mediator.html">Chaplin.mediator</a>, meant to be used as a mixin.</p>
+
+
+    <main class="actual-content">
+      <header class="module-info">
+      
+      <h1>
+        Chaplin.EventBroker
+        
+          <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/lib/event_broker.coffee">&rarr; Source</a>
+        
+      </h1>
+      
+      </header>
+      <p>The <code>EventBroker</code> offers an interface to interact with <a href="chaplin.mediator.html">Chaplin.mediator</a>, meant to be used as a mixin.</p>
 
 <h2 id="methods">Methods</h2>
 
@@ -54,7 +68,8 @@
 
 <p>To give a class these pub/sub capabilities, you just need to make it extend <code>Chaplin.EventBroker</code>: <span class="coffeescript"><code>_.extend @prototype, EventBroker</code></span> <span class="javascript"><code>_.extend(this.prototype, EventBroker)</code></span>.</p>
 
-  </div>
+    </main>
+  </section>
   </div>
 </body>
 </html>

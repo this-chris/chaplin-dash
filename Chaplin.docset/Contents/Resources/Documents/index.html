@@ -5,9 +5,7 @@
   <title>
      Chaplin Documentation &middot;  Chaplin Documentation
   </title>
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/application.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" type="text/css" href="pygments.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -18,31 +16,48 @@
   <![endif]-->
 </head>
 <body class="container-fluid">
+  <div class="wrapper">
 
-  <div id="content" class="span9">
-    <header class="module-info">
-    
-    <h1>
-      Chaplin Documentation
-      
-    </h1>
-    
-    </header>
-    <p>Welcome to the documentation of the Chaplin framework. Chaplin is an architecture for complex single-page web applications. To learn more about Chaplin go to <a href="http://chaplinjs.org">chaplinjs.org</a> or dive right into the docs!</p>
+  <nav class="span3 sidebar">
 
-<h2 id="toc_0">Principles &amp; Features</h2>
+    <form action="index.html" class="language">
+      <fieldset>
+        <legend>Examples in:</legend>
+        <ul class="languages">
+        <li class="coffeescript">
+          <label>
+            <input type="radio" name="language" value="coffeescript" checked> CoffeeScript
+          </label>
+        </li>
+        <li class="javascript">
+          <label>
+            <input type="radio" name="language" value="javascript"> JavaScript
+          </label>
+        </li>
+        </ul>
+      </fieldset>
+    </form>
+    <h2>
+      Modules
+      <button class="toggle-navigation">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </h2>
+    
+    <div class="navigation">
+      <h3 id="toc_0">General</h3>
 
 <ul>
-<li><a href="overview.html">Overview</a></li>
+<li><a href="index.html">Overview</a></li>
 <li><a href="getting_started.html">Getting started</a></li>
-<li><a href="events.html">Event Handling Overview</a></li>
+<li><a href="events.html">Event handling overview</a></li>
 <li><a href="disposal.html">Disposal</a></li>
-<li><a href="handling_async.html">Handling Asynchronous Dependencies</a></li>
+<li><a href="handling_async.html">Handling async deps</a></li>
 </ul>
 
-<h2 id="toc_1">API Reference</h2>
-
-<h3 id="toc_2">Core</h3>
+<h3 id="toc_1">Core</h3>
 
 <ul>
 <li><a href="chaplin.mediator.html" title="Global event bus">Chaplin.mediator</a></li>
@@ -52,7 +67,7 @@
 <li><a href="chaplin.application.html" title="Application boostrapper">Chaplin.Application</a></li>
 </ul>
 
-<h3 id="toc_3">MVC</h3>
+<h3 id="toc_2">MVC</h3>
 
 <ul>
 <li><a href="chaplin.controller.html" title="For initializing models, collections and views">Chaplin.Controller</a></li>
@@ -62,7 +77,7 @@
 <li><a href="chaplin.collection_view.html" title="An extension of `Chaplin.View` for displaying collections">Chaplin.CollectionView</a></li>
 </ul>
 
-<h3 id="toc_4">Libs</h3>
+<h3 id="toc_3">Libs</h3>
 
 <ul>
 <li><a href="chaplin.event_broker.html" title="Mixin for communication with the mediator">Chaplin.EventBroker</a></li>
@@ -73,7 +88,130 @@
 <li><a href="chaplin.helpers.html" title="Helpers with Chaplin integration">Chaplin.helpers</a></li>
 </ul>
 
-  </div>
+<h3 id="toc_4">More</h3>
+
+<ul>
+<li><a href="https://github.com/chaplinjs/chaplin/wiki/">Best practices and cookbook</a></li>
+<li><a href="http://goo.gl/ny2FDx">Annotated source code</a></li>
+</ul>
+
+    </div>
+  </nav>
+  <section id="content" class="span9">
+
+    <header class="nav-header">
+      <div class="list-wrapper">
+        <ul class="page-nav">
+          <li class="logo"><img width="30" src="http://chaplinjs.org/images/chaplin-hat.png" alt=""></li>
+          <li class="logo-text">Chaplin</li>
+          <li><a href="http://chaplinjs.org" data-pattern="\/\/chaplinjs\.org/(#.*)?$">About</a></li>
+          <li><a class="active" href="index.html" data-pattern="docs\.chaplinjs">Documentation</a></li>
+          <li><a href="http://chaplinjs.org/examples.html" data-pattern="examples\.html$">Examples</a></li>
+          <li><a href="http://chaplinjs.org/support.html" data-pattern="support\.html$">Support</a></li>
+        </ul>
+      </div>
+    </header>
+
+
+    <main class="actual-content">
+      <header class="module-info">
+      
+      <h1>
+        Chaplin Documentation
+        
+      </h1>
+      
+      </header>
+      <p>Welcome to the documentation of the Chaplin framework. Chaplin is an architecture for complex single-page web applications. To learn more about Chaplin go to <a href="http://chaplinjs.org">chaplinjs.org</a> or dive right into the docs!</p>
+
+<p>Chaplin empowers you to <strong>quickly</strong> develop <strong>scalable</strong> <strong>single-page</strong> web applications; allowing you to focus on designing and developing the underlying functionality in your web application.</p>
+
+<h2 id="toc_0">Architecture</h2>
+
+<p>Chaplin is an architecture for JavaScript web applications based on the <a href="http://backbonejs.org">Backbone.js</a> library. The code is originally derived from <a href="http://moviepilot.com">moviepilot.com</a>, a large single-page application.</p>
+
+<p>While Backbone is an easy starting point, it provides only basic, low-level patterns. Backbone provides little structure above simple routing, individual models, views and their binding. Chaplin addresses these limitations by providing a light-weight but flexible structure which leverages well-proven design patterns and best practises.</p>
+
+<h2 id="toc_1">Framework</h2>
+
+<p><a href="chaplin-lifecycle.png"><img src="chaplin-lifecycle.png" alt=""></a></p>
+
+<h3 id="toc_2">Application</h3>
+
+<p>The bootstrapper of the application; an extension point for key parts of the architecture.</p>
+
+<h3 id="toc_3">Router</h3>
+
+<p>Facilitates mapping URLs to controller actions based on a user-defined configuration file. It is responsible for observing and acting upon URL changes. It does no direct action apart from notifiying the dispatcher of such a change however.</p>
+
+<h4 id="toc_4">Routes</h4>
+
+<p>By convention, routes should be declared in a separate module (typically <code>routes.coffee</code>). For example:</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">match</span> <span class="s">&#39;likes/:id&#39;</span><span class="p">,</span> <span class="s">&#39;likes#show&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">match</span><span class="p">(</span><span class="s1">&#39;likes/:id&#39;</span><span class="p">,</span> <span class="s1">&#39;likes#show&#39;</span><span class="p">);</span>
+</code></pre></div>
+<p>This works much like the <a href="http://guides.rubyonrails.org/routing.html">Ruby on Rails counterpart</a>. If a route matches, a <code>router:match</code> event is published passing a <code>params</code> hash which contains pattern matches (like <code>id</code> in the example above) and additional GET parameters parsed from the query string. This hands control over to the <strong>Dispatcher</strong>.</p>
+
+<h3 id="toc_5">Dispatcher</h3>
+
+<p>Between the router and the controllers, there is the <strong>Dispatcher</strong> listening for routing events. On such events, it loads the target controller, creates an instance of it and calls the target action. The action is actually a method of the controller. The previously active controller is automatically disposed.</p>
+
+<h3 id="toc_6">Layout</h3>
+
+<p>The <code>Layout</code> is the top-level application view. When a new controller is activated, the <code>Layout</code> is responsible for changing the main view to the view of the new controller.</p>
+
+<p>In addition, the <code>Layout</code> handles the activation of internal links. That is, you can use a normal <code>&lt;a href=&quot;/foo&quot;&gt;</code> element to link to another controller module.</p>
+
+<p>Furthermore, top-level DOM events on <code>document</code> or <code>body</code>, should be registered here.</p>
+
+<h3 id="toc_7">mediator</h3>
+
+<p>The mediator is an event broker that implements the <a href="http://en.wikipedia.org/wiki/Publish/subscribe">Publish/Subscribe</a> design pattern. It should be used for most of the inter-module communication in Chaplin applications. Modules can emit events using <code>this.publishEvent</code> in order to notify other modules, and listen for such events using <code>this.subscribeEvent</code>. The mediator can also be used to easily share data between several modules, like a user model or other persistent and globally accessible data.</p>
+
+<h3 id="toc_8">Controller</h3>
+
+<p>A controller is the place where a model and associated views are instantiated.  Typically, a controller represents one screen of the application. There can be one current controller which provides the main view and represents the current URL.</p>
+
+<p>By convention, there is a controller for each application module. A controller may provide several action methods like <code>index</code>, <code>show</code>, <code>edit</code> and so on.  These actions are called by the <code>Dispatcher</code> when a route matches.</p>
+
+<h3 id="toc_9">Model</h3>
+
+<p>Holds reference to the data and contains any logic neccessary to retrieve the data from its source and optionally send it back.</p>
+
+<h3 id="toc_10">Collection</h3>
+
+<p>A collection of models. Contains logic to provide client-side filtering and sorting of them.</p>
+
+<h3 id="toc_11">View</h3>
+
+<p>Provides the logic that drives the user interface such as responding to DOM events and mapping data from the model to a template.</p>
+
+<h3 id="toc_12">Collection View</h3>
+
+<p>Maps to a collection to generate a list of item views that are bound to the models in the collection.</p>
+
+<h2 id="toc_13">Flow</h2>
+
+<p>Every Chaplin application starts with a class that inherits from <code>Application</code>. This is merely a bootstrapper which instantiates and configures the four core moules: <strong>Dispatcher</strong>, <strong>Layout</strong>, <strong>mediator</strong>, and <strong>Router</strong> (in that order).</p>
+
+<p>After creating the <strong>Router</strong>, the routes are registered. Usually they are read from a configuration file called  <code>routes.{coffee,js}</code>. A route maps a URL pattern to a controller action. For example, the path <code>/</code> can be mapped to the <code>index</code> action of the <code>HomeController</code>.</p>
+
+<p>After the <strong>Application</strong> invokes <code>startRouting</code>; the <strong>Router</strong> starts to observe the current URL. If a route matches, it notifies the other modules.</p>
+
+<p>This is where the <strong>Dispatcher</strong> takes over. It loads the target controller and its dependencies (e.g. <code>HomeController</code>). Then, the controller is instantiated and the controller action is called (e.g. <code>index</code>). An <em>action</em> is a method of the controller. The <strong>Dispatcher</strong> also keeps track of the currently active controller, and disposes the previously active controller.</p>
+
+<p>Typically, a controller creates a <strong>Model</strong> or <strong>Collection</strong> and a corresponding <strong>View</strong>. The model or collection may fetch some data from the server which is then rendered by the view. By convention, the models, collection and views are saved as properties on the controller instance.</p>
+
+<h2 id="toc_14"><a href="disposal.html">Memory Management</a></h2>
+
+<p>A core concern of the Chaplin architecture is proper memory management. While there isn’t a broad discussion about garbage collection in JavaScript applications, it is an important topic, especially in single-page applications, where the lifetime and multitude of objects increases compared to earlier architectures. In event-driven systems, registering events creates references between objects. If these references aren’t removed when a module is no longer in use, the garbage collector can’t free the memory.</p>
+
+<p>Since Backbone provides little out of the box to manage memory, Chaplin extends Backbone’s <code>Model</code>, <code>Collection</code> and <code>View</code> classes to implement a powerful disposal process which ensures that each controller, model, collection and view cleans up after itself.</p>
+
+<p><img src="original.jpg" alt="Ending"></p>
+
+    </main>
+  </section>
   </div>
 </body>
 </html>

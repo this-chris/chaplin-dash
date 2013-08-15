@@ -5,9 +5,7 @@
   <title>
      Chaplin.Collection &middot;  Chaplin Documentation
   </title>
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/application.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" type="text/css" href="pygments.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -18,18 +16,35 @@
   <![endif]-->
 </head>
 <body class="container-fluid">
-  <div id="content" class="span9">
-    <header class="module-info">
-    
-    <h1>
-      Chaplin.Collection
-      
-        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/models/collection.coffee">&rarr; Source</a>
-      
-    </h1>
-    
+  <div class="wrapper">
+  <section id="content" class="span9">
+
+    <header class="nav-header">
+      <div class="list-wrapper">
+        <ul class="page-nav">
+          <li class="logo"><img width="30" src="http://chaplinjs.org/images/chaplin-hat.png" alt=""></li>
+          <li class="logo-text">Chaplin</li>
+          <li><a href="http://chaplinjs.org" data-pattern="\/\/chaplinjs\.org/(#.*)?$">About</a></li>
+          <li><a class="active" href="index.html" data-pattern="docs\.chaplinjs">Documentation</a></li>
+          <li><a href="http://chaplinjs.org/examples.html" data-pattern="examples\.html$">Examples</a></li>
+          <li><a href="http://chaplinjs.org/support.html" data-pattern="support\.html$">Support</a></li>
+        </ul>
+      </div>
     </header>
-    <p><code>Chaplin.Collection</code> is an extension of <code>Backbone.Collection</code>. Major additions are disposal for improved memory management and the inclusion of the pub/sub pattern via the <code>Chaplin.EventBroker</code> mixin.</p>
+
+
+    <main class="actual-content">
+      <header class="module-info">
+      
+      <h1>
+        Chaplin.Collection
+        
+          <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/models/collection.coffee">&rarr; Source</a>
+        
+      </h1>
+      
+      </header>
+      <p><code>Chaplin.Collection</code> is an extension of <code>Backbone.Collection</code>. Major additions are disposal for improved memory management and the inclusion of the pub/sub pattern via the <code>Chaplin.EventBroker</code> mixin.</p>
 
 <h2 id="methods">Methods</h2>
 
@@ -47,7 +62,8 @@
 
 <p>To make use of Chaplin’s automatic memory management, use <code>subscribeEvent</code> instead of registering methods directly as pub/sub listeners. This forces the handler context so the handler might be removed again on model/collection disposal. It’s crucial to remove all references to model/collection methods to allow them to be garbage collected.</p>
 
-  </div>
+    </main>
+  </section>
   </div>
 </body>
 </html>

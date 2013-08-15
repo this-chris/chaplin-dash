@@ -5,9 +5,7 @@
   <title>
      Chaplin.Router &middot;  Chaplin Documentation
   </title>
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
-  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/application.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <link rel="stylesheet" type="text/css" href="pygments.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -18,19 +16,35 @@
   <![endif]-->
 </head>
 <body class="container-fluid">
- 
-  <div id="content" class="span9">
-    <header class="module-info">
-    
-    <h1>
-      Chaplin.Router
-      
-        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/lib/router.coffee">&rarr; Source</a>
-      
-    </h1>
-    
+  <div class="wrapper">
+  <section id="content" class="span9">
+
+    <header class="nav-header">
+      <div class="list-wrapper">
+        <ul class="page-nav">
+          <li class="logo"><img width="30" src="http://chaplinjs.org/images/chaplin-hat.png" alt=""></li>
+          <li class="logo-text">Chaplin</li>
+          <li><a href="http://chaplinjs.org" data-pattern="\/\/chaplinjs\.org/(#.*)?$">About</a></li>
+          <li><a class="active" href="index.html" data-pattern="docs\.chaplinjs">Documentation</a></li>
+          <li><a href="http://chaplinjs.org/examples.html" data-pattern="examples\.html$">Examples</a></li>
+          <li><a href="http://chaplinjs.org/support.html" data-pattern="support\.html$">Support</a></li>
+        </ul>
+      </div>
     </header>
-    <p>This module is responsible for observing URL changes and matching them against a list of declared routes. If a declared route matches the current URL, a <code>router:match</code> event is triggered.</p>
+
+
+    <main class="actual-content">
+      <header class="module-info">
+      
+      <h1>
+        Chaplin.Router
+        
+          <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0/src/chaplin/lib/router.coffee">&rarr; Source</a>
+        
+      </h1>
+      
+      </header>
+      <p>This module is responsible for observing URL changes and matching them against a list of declared routes. If a declared route matches the current URL, a <code>router:match</code> event is triggered.</p>
 
 <p><code>Chaplin.Router</code> is a replacement for <a href="http://documentcloud.github.com/backbone/#Router">Backbone.Router</a> and does not inherit from it. It is a stand-alone implementation with several advantages over Backbone’s default. Why change the router implementation completely?</p>
 
@@ -104,23 +118,27 @@ For example, if you have a constraints object with three constraints: x, y, and 
 
 <h3 class="module-member" id="route">route([path])</h3>
 
-<p>Route a given path manually. Returns a boolean after it has been matched against the registered routes, corresponding to whether or not a match occurred.</p>
-
-<p>This looks similar to <code>Backbone.history.loadUrl</code>, but it accepts an absolute path with a leading slash (e.g. <code>/foo</code>) and passes a <code>changeURL</code> parameter to the route handler function.</p>
+<p>Route a given path manually. Returns a boolean after it has been matched against the registered routes, corresponding to whether or not a match occurred. Updates the URL in the browser.</p>
 
 <ul>
-<li><strong>path</strong>: an absolute path with a leading slash</li>
-</ul>
-
-<h3 class="module-member" id="routeHandler">routeHandler([path], [callback])</h3>
-
-<p>Handler for the global <code>!router:route</code> event, performs routing for the path given in <code>path</code>. If <code>callback</code> is provided, it will be called with a boolean value communicating whether or not there was a match.</p>
+<li><strong>path</strong> can be either a string, or an object describing a route by
 
 <ul>
-<li><strong>path</strong>: an absolute path with a leading slash</li>
-<li><strong>callback</strong>: a callback which is called independent of routing success</li>
+<li><strong>controller</strong>: name of the controller,</li>
+<li><strong>action</strong>: name of the action,</li>
+<li><strong>name</strong>: name of a <a href="chaplin.router.html#match">named route</a>, can replace <strong>controller</strong> and <strong>action</strong>,</li>
+<li><strong>params</strong>: params hash.</li>
+</ul></li>
 </ul>
 
+<p>For routing from other modules, the <code>!router:route</code> event can be used. All of the following would be valid use cases.</p>
+<div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">@publishEvent</span> <span class="s">&#39;!router:route&#39;</span><span class="p">,</span> <span class="nv">name: </span><span class="s">&#39;show_message&#39;</span><span class="p">,</span>  <span class="nv">params: </span><span class="p">{</span><span class="nv">id: </span><span class="mi">80</span><span class="p">}</span>
+<span class="nx">@publishEvent</span> <span class="s">&#39;!router:route&#39;</span><span class="p">,</span> <span class="nv">controller: </span><span class="s">&#39;messages&#39;</span><span class="p">,</span> <span class="nv">action: </span><span class="s">&#39;show&#39;</span><span class="p">,</span> <span class="nv">params: </span><span class="p">{</span><span class="nv">id: </span><span class="mi">80</span><span class="p">}</span>
+<span class="nx">@publishEvent</span> <span class="s">&#39;!router:route&#39;</span><span class="p">,</span> <span class="s">&#39;/messages/80&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="k">this</span><span class="p">.</span><span class="nx">publishEvent</span><span class="p">(</span><span class="s1">&#39;!router:route&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;show_message&#39;</span><span class="p">,</span>  <span class="nx">params</span><span class="o">:</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">80</span><span class="p">}})</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">publishEvent</span><span class="p">(</span><span class="s1">&#39;!router:route&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;messages&#39;</span><span class="p">,</span> <span class="nx">action</span><span class="o">:</span> <span class="s1">&#39;show&#39;</span><span class="p">,</span> <span class="nx">params</span><span class="o">:</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">80</span><span class="p">}})</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">publishEvent</span><span class="p">(</span><span class="s1">&#39;!router:route&#39;</span><span class="p">,</span> <span class="s1">&#39;/messages/80&#39;</span><span class="p">)</span>
+</code></pre></div>
 <h3 class="module-member" id="changeURL">changeURL([url])</h3>
 
 <p>Changes the current URL and adds a history entry without triggering any route actions.</p>
@@ -131,7 +149,7 @@ For example, if you have a constraints object with three constraints: x, y, and 
 
 <h3 class="module-member" id="changeURLHandler">changeURLHandler([url])</h3>
 
-<p>Handler for the globalized <code>!router:changeURL</code> event. Calls <code>this.changeURL</code>.</p>
+<p>Handler for the globalized <code>!router:changeURL</code> event. Calls <code>changeURL</code>.</p>
 
 <ul>
 <li><strong>url</strong>: string that is going to be pushed as the page’s URL</li>
@@ -146,15 +164,14 @@ For example, if you have a constraints object with three constraints: x, y, and 
 <p><code>Chaplin.Router</code> listens to these global events:</p>
 
 <ul>
-<li><code>!router:route path[, options], callback</code></li>
-<li><code>!router:routeByName name, params[, options], callback</code></li>
+<li><code>!router:route path[, options]</code></li>
 <li><code>!router:reverse name, params[, options], callback</code></li>
 <li><code>!router:changeURL url[, options]</code></li>
 </ul>
 
 <h2 id="toc_2">Usage</h2>
 
-<p><code>Chaplin.Router</code> is a dependency of <a href="chaplin.application.html">Chaplin.Application</a> which should be extended by your main application class. Within your application class you should initialize the <code>Router</code> by calling <code>this.initRouter</code> (passing your routes module as an argument) followed by <code>this.startRouting</code>.</p>
+<p><code>Chaplin.Router</code> is a dependency of <a href="chaplin.application.html">Chaplin.Application</a> which should be extended by your main application class. Within your application class you should initialize the <code>Router</code> by calling <code>initRouter</code> (passing your routes module as an argument) followed by <code>startRouting</code>.</p>
 <div class="highlight"><pre><code class="coffeescript language-coffeescript" data-lang="coffeescript"><span class="nx">define</span> <span class="p">[</span>
   <span class="s">&#39;chaplin&#39;</span><span class="p">,</span>
   <span class="s">&#39;routes&#39;</span>
@@ -187,7 +204,8 @@ For example, if you have a constraints object with three constraints: x, y, and 
   <span class="k">return</span> <span class="nx">MyApplication</span><span class="p">;</span>
 <span class="p">});</span>
 </code></pre></div>
-  </div>
+    </main>
+  </section>
   </div>
 </body>
 </html>
