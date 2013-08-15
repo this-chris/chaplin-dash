@@ -23,11 +23,8 @@ body {
   background-size: contain;
   background-position: center center;
 }
-.sidebar nav {
-  padding: 0 1em;
-}
-.sidebar ul {
-  line-height: 1.25;
+.sidebar * {
+  display: none !important;
 }
 .wrapper {
    width: 965px;
@@ -173,7 +170,6 @@ img[src$="chaplin-lifecycle.png"] {
   background: #fbfbfb;
   border-radius: 3px;
   border: 1px solid #cbcbcb;
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.09), inset 0px 0px 2px 2px rgba(255, 255, 255, 0.5), inset 0 0 5px 5px rgba(255, 255, 255, 0.4);
   height: auto;
 }
 
@@ -193,12 +189,6 @@ img[src$="chaplin-lifecycle.png"] {
 
 /* Device Dependent */
 @media (min-width: 976px) { /* Desktop */
-  .sidebar {
-    position: fixed;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
   .module-info {
     /*position: fixed;*/
     top: 0;
